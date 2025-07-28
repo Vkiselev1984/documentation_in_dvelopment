@@ -3,6 +3,27 @@ const cors = require('cors');
 const app = express();
 const PORT = 4000;
 
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./note-keeper.db');
+
+// Создание таблиц, если не существуют
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS categories (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        color TEXT NOT NULL,
+        icon TEXT,
+        description TEXT
+    )`);
+    db.run(`CREATE TABLE IF NOT EXISTS notes (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        categoryId TEXT NOT NULL,
+        FOREIGN KEY (categoryId) REFERENCES categories(id)
+    )`);
+});
+
 app.use(cors());
 app.use(express.json());
 

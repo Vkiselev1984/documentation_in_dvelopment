@@ -1,10 +1,10 @@
 // src/models/Note.js
 class Note {
-    constructor(id, title, content, category = 'general') {
-        this.id = id;           // Уникальный идентификатор заметки
-        this.title = title;     // Заголовок заметки
-        this.content = content; // Содержимое заметки
-        this.category = category; // Категория заметки (по умолчанию 'general')
+    constructor(id, title, content, categoryId) {
+        this.id = id;           // Unique note identifier
+        this.title = title;     // Note title
+        this.content = content; // Note content
+        this.categoryId = categoryId; // Category id (required)
     }
 }
 

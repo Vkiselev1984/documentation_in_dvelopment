@@ -1,51 +1,139 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
-import noteService from '../services/NoteService';
-import NoteForm from './NoteForm';
-import NoteList from './NoteList';
+import { useState, useEffect } from 'react';
+import postService from '../services/PostService';
+import categoryService from '../services/CategoryService';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import PostForm from './PostForm';
+import PostList from './PostList';
+import DatabasePage from './DatabasePage';
+import CategoryManager from './CategoryManager';
+import CategoryForm from './CategoryForm';
 
 const App = () => {
-    const [notes, setNotes] = useState(noteService.getNotes());
-    const [editingNote, setEditingNote] = useState(null);
+    const [posts, setPosts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [editingPost, setEditingPost] = useState(null);
+    const [categoryFilter, setCategoryFilter] = useState(null);
 
-    const handleAddNote = (note) => {
-        noteService.addNote(note);
-        setNotes(noteService.getNotes());
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        setPosts(await postService.getPosts());
+        setCategories(await categoryService.getCategories());
     };
 
-    const handleDeleteNote = (id) => {
-        noteService.deleteNote(id);
-        setNotes(noteService.getNotes());
-        // Если удаляем редактируемую заметку — сбрасываем форму
-        if (editingNote && editingNote.id === id) {
-            setEditingNote(null);
+    const handleAddPost = async (post) => {
+        await postService.addPost(post);
+        setPosts(await postService.getPosts());
+    };
+
+    const handleDeletePost = async (id) => {
+        await postService.deletePost(id);
+        setPosts(await postService.getPosts());
+        if (editingPost && editingPost.id === id) setEditingPost(null);
+    };
+
+    const handleEditStart = (post) => {
+        setEditingPost(post);
+    };
+
+    const handleEditPost = async (updatedPost) => {
+        await postService.editPost(updatedPost);
+        setPosts(await postService.getPosts());
+        setEditingPost(null);
+    };
+
+    const handleCategoryChange = async () => {
+        setCategories(await categoryService.getCategories());
+        // Reset filter if selected category was deleted
+        const updatedCategories = await categoryService.getCategories();
+        if (categoryFilter && !updatedCategories.find(cat => cat.id === categoryFilter)) {
+            setCategoryFilter(null);
+        }
+        if (editingPost && !updatedCategories.find(cat => cat.id === editingPost.categoryId)) {
+            setEditingPost(null);
         }
     };
 
-    const handleEditStart = (note) => {
-        setEditingNote(note);
-    };
-
-    const handleEditNote = (updatedNote) => {
-        noteService.editNote(updatedNote);
-        setNotes(noteService.getNotes());
-        setEditingNote(null);
-    };
+    const filteredPosts = categoryFilter ? posts.filter(p => p.categoryId === categoryFilter) : posts;
 
     return (
-        <div className="container">
-            <h1 className="mt-4">NoteKeeper</h1>
-            <NoteForm
-                onAddNote={handleAddNote}
-                editingNote={editingNote}
-                onEditNote={handleEditNote}
-            />
-            <NoteList
-                notes={notes}
-                onDeleteNote={handleDeleteNote}
-                onEditNote={handleEditStart}
-            />
-        </div>
+        <Router>
+            <div className="container">
+                <h1 className="mt-4">NoteKeeper</h1>
+                <nav className="mb-4">
+                    <Link to="/add-post" className="btn btn-primary me-2">Add Post</Link>
+                    <Link to="/posts" className="btn btn-outline-primary me-2">Posts</Link>
+                    <Link to="/categories" className="btn btn-outline-primary me-2">Categories</Link>
+                    <Link to="/database" className="btn btn-outline-secondary">Database</Link>
+                </nav>
+                <Routes>
+                    <Route path="/add-post" element={
+                        <PostForm
+                            onAddPost={handleAddPost}
+                            editingPost={editingPost}
+                            onEditPost={handleEditPost}
+                            categories={categories}
+                        />
+                    } />
+                    <Route path="/posts" element={
+                        <>
+                            <div className="mb-3">
+                                <button onClick={() => setCategoryFilter(null)} className={`btn btn-outline-secondary btn-sm me-2${categoryFilter === null ? ' active' : ''}`}>All</button>
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => setCategoryFilter(cat.id)}
+                                        className={`btn btn-sm me-2 ${categoryFilter === cat.id ? 'btn-primary' : 'btn-outline-primary'}`}
+                                        style={{ background: categoryFilter === cat.id ? cat.color : '', color: categoryFilter === cat.id ? '#fff' : '' }}
+                                    >
+                                        {cat.icon ? cat.icon + ' ' : ''}{cat.name}
+                                    </button>
+                                ))}
+                            </div>
+                            <PostList
+                                posts={filteredPosts}
+                                onDeletePost={handleDeletePost}
+                                onEditPost={handleEditStart}
+                                categories={categories}
+                            />
+                        </>
+                    } />
+                    <Route path="/categories" element={
+                        <>
+                            <CategoryForm onCategoryAdded={handleCategoryChange} />
+                            <CategoryManager categories={categories} onCategoryChange={handleCategoryChange} />
+                        </>
+                    } />
+                    <Route path="/database" element={<DatabasePage />} />
+                    <Route path="*" element={
+                        <>
+                            <div className="mb-3">
+                                <button onClick={() => setCategoryFilter(null)} className={`btn btn-outline-secondary btn-sm me-2${categoryFilter === null ? ' active' : ''}`}>All</button>
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        onClick={() => setCategoryFilter(cat.id)}
+                                        className={`btn btn-sm me-2 ${categoryFilter === cat.id ? 'btn-primary' : 'btn-outline-primary'}`}
+                                        style={{ background: categoryFilter === cat.id ? cat.color : '', color: categoryFilter === cat.id ? '#fff' : '' }}
+                                    >
+                                        {cat.icon ? cat.icon + ' ' : ''}{cat.name}
+                                    </button>
+                                ))}
+                            </div>
+                            <PostList
+                                posts={filteredPosts}
+                                onDeletePost={handleDeletePost}
+                                onEditPost={handleEditStart}
+                                categories={categories}
+                            />
+                        </>
+                    } />
+                </Routes>
+            </div>
+        </Router>
     );
 };
 
