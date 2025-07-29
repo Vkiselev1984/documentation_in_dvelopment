@@ -1,11 +1,10 @@
-// src/models/Note.js
 class Note {
     constructor(id, title, content, categoryId) {
-        this.id = id;           // Unique note identifier
-        this.title = title;     // Note title
-        this.content = content; // Note content
-        this.categoryId = categoryId; // Category id (required)
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.categoryId = categoryId;
     }
 }
 
-export default Note; // Экспортируем класс для использования в других файлах
+export default Note;

@@ -1,5 +1,3 @@
-// src/services/PostService.js
-
 const API_POSTS = 'http://localhost:4000/api/posts';
 const API_IMAGES = 'http://localhost:4000/api/images';
 
@@ -32,7 +30,8 @@ class PostService {
 
     async deletePost(id) {
         const res = await fetch(`${API_POSTS}/${id}`, {
-            method: 'DELETE' });
+            method: 'DELETE'
+        });
         if (!res.ok) throw new Error('Failed to delete post');
     }
 

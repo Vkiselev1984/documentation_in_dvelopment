@@ -11,13 +11,13 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Ensure uploads directory exists
+
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir);
 }
 
-// Multer setup for file uploads
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadsDir);
@@ -29,7 +29,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Инициализация базы данных
 const db = new sqlite3.Database('./note-keeper.db');
 
 db.serialize(() => {
@@ -98,7 +97,7 @@ app.delete('/api/categories/:id', (req, res) => {
     });
 });
 
-// CRUD для постов
+
 app.get('/api/posts', (req, res) => {
     db.all('SELECT * FROM posts', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -135,7 +134,7 @@ app.delete('/api/posts/:id', (req, res) => {
     });
 });
 
-// API для просмотра содержимого БД
+
 app.get('/api/db/posts', (req, res) => {
     db.all('SELECT * FROM posts', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -155,7 +154,7 @@ app.get('/api/db/images', (req, res) => {
     });
 });
 
-// Универсальное удаление записи по id
+
 app.delete('/api/db/:table/:id', (req, res) => {
     const { table, id } = req.params;
     if (!['posts', 'categories', 'images'].includes(table)) return res.status(400).json({ error: 'Invalid table' });
@@ -165,7 +164,7 @@ app.delete('/api/db/:table/:id', (req, res) => {
     });
 });
 
-// Универсальное обновление записи по id
+
 app.put('/api/db/:table/:id', (req, res) => {
     const { table, id } = req.params;
     const data = req.body;
@@ -180,7 +179,7 @@ app.put('/api/db/:table/:id', (req, res) => {
     });
 });
 
-// CRUD для изображений
+
 app.get('/api/images', (req, res) => {
     db.all('SELECT * FROM images', [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });

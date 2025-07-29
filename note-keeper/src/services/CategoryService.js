@@ -1,5 +1,3 @@
-// src/services/CategoryService.js
-
 const API_URL = 'http://localhost:4000/api/categories';
 
 class CategoryService {
@@ -31,7 +29,8 @@ class CategoryService {
 
     async deleteCategory(id) {
         const res = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE' });
+            method: 'DELETE'
+        });
         if (!res.ok) throw new Error('Failed to delete category');
     }
 }

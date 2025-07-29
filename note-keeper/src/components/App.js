@@ -1,13 +1,13 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState, useEffect } from 'react';
-import postService from '../services/PostService';
+import { useEffect, useState } from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import categoryService from '../services/CategoryService';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import postService from '../services/PostService';
+import CategoryForm from './CategoryForm';
+import CategoryManager from './CategoryManager';
+import DatabasePage from './DatabasePage';
 import PostForm from './PostForm';
 import PostList from './PostList';
-import DatabasePage from './DatabasePage';
-import CategoryManager from './CategoryManager';
-import CategoryForm from './CategoryForm';
 
 const App = () => {
     const [posts, setPosts] = useState([]);
@@ -47,7 +47,6 @@ const App = () => {
 
     const handleCategoryChange = async () => {
         setCategories(await categoryService.getCategories());
-        // Reset filter if selected category was deleted
         const updatedCategories = await categoryService.getCategories();
         if (categoryFilter && !updatedCategories.find(cat => cat.id === categoryFilter)) {
             setCategoryFilter(null);
