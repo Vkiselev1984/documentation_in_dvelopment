@@ -1,5 +1,16 @@
 # NoteKeeper Documentation
 
+## Table of Contents
+- [Overview](#1-overview)
+- [Main Features](#2-main-features)
+- [User Scenarios (Use Cases)](#user-scenarios-use-cases)
+- [Actual Project Structure](#actual-project-structure)
+- [Application Architecture](#application-architecture)
+- [Key Code Examples and Function Descriptions](#key-code-examples-and-function-descriptions)
+- [Data Model & Database Structure](#3-data-model--database-structure)
+- [API Documentation](#4-api-documentation)
+
+
 ## 1. Overview
 
 NoteKeeper is a web application for creating, editing, deleting, and searching notes with user-defined categories. It consists of a React frontend and a Node.js (Express) backend API with SQLite database. Notes and categories are stored persistently in the database and accessed via REST API.
