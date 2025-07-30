@@ -1124,6 +1124,18 @@ SELECT * FROM images;
 
 ## 4. API Documentation
 
+### Interactive API Documentation (Swagger UI)
+
+- The NoteKeeper backend provides an interactive API documentation page using Swagger UI.
+- Open [http://localhost:4000/api-docs](http://localhost:4000/api-docs) in your browser to:
+  - Browse all available API endpoints, grouped by resource.
+  - See detailed descriptions, parameters, request/response schemas, and example data.
+  - Try out API methods directly from the browser (send real requests, see responses).
+  - Copy ready-to-use curl commands for any endpoint.
+- The documentation is always up-to-date with your `openapi.yaml` file.
+- This is the fastest way to explore, test, and debug the API for both frontend and backend developers.
+
+
 The NoteKeeper backend exposes a RESTful API for managing notes, categories, images, and database records. All data is exchanged in JSON format, and standard HTTP status codes are used for responses. The API is designed to be simple, predictable, and easy to integrate with any frontend or external tool.
 
 **Full OpenAPI/Swagger specification:** See [openapi.yaml](./openapi.yaml) for detailed request/response schemas and all available endpoints.
