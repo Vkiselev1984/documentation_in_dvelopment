@@ -4,17 +4,18 @@
 
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
-- [User Scenarios (Use Cases)](#user-scenarios-use-cases)
+- [User Scenarios](#user-scenarios-use-cases)
+- [Yaml diagrams](#yaml-diagrams)
 - [Project Structure](#project-structure)
 - [Key Code Examples and Function Descriptions](#key-code-examples-and-function-descriptions)
 - [Data Model & Database Structure](#3-data-model--database-structure)
 - [API Documentation](#4-api-documentation)
 
-## 1. Overview
+## 1. OVERVIEW
 
 NoteKeeper is an application for creating, editing, deleting, and searching notes with user-defined categories. It consists of a React frontend and a Node.js (Express) backend API with SQLite database. Notes and categories are stored persistently in the database and accessed via REST API.
 
-## 2. Main Features
+## 2. MAIN FEATURES
 
 The application allows you to:
 
@@ -49,7 +50,7 @@ The application allows you to:
 
 11. React Scripts: A set of scripts that makes it easy to set up and run React applications, including commands for building, testing, and running the application.
 
-## Users Scenarios (Use Cases)
+## USERS SCENARIOS
 
 ### Notes
 
@@ -102,7 +103,7 @@ The application allows you to:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## Уaml diagrams
+## УAML DIAGRAMS
 
 ### Notes
 
@@ -259,7 +260,7 @@ The application allows you to:
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
-## Project Structure
+## PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
 
 ```
 note-keeper/
@@ -281,10 +282,8 @@ note-keeper/
 │   ├── package.json
 │   └── node_modules/
 ├── database/
-│   └── note-keeper.db
+    └── note-keeper.db
 ```
-
-### Purpose
 
 - **backend/** — Contains all backend (server-side) code.
 
@@ -318,14 +317,7 @@ note-keeper/
 
   - **note-keeper.db** — The SQLite database file. Stores all notes, categories, and images.
 
-- **img/** — Contains screenshots and diagrams used in the documentation.
-- **openapi.yaml** — The OpenAPI (Swagger) specification describing all backend API endpoints, request/response formats, and data models.
-- **NoteKeeper.md** — This documentation file.
-- **README.md** — General project information and documentation guidelines.
-
 ---
-
-NoteKeeper is a web application for creating, editing, deleting, and searching notes with user-defined categories. The project is built on object-oriented and component-based principles, ensuring modularity, reusability, and clarity in both frontend and backend.
 
 ### Principles of Work
 
@@ -350,10 +342,6 @@ NoteKeeper is a web application for creating, editing, deleting, and searching n
 - **Image upload** is implemented via the `/api/upload` endpoint using Multer. Files are saved in `note-keeper/backend/uploads`, and links to them are stored in the `images` table.
 - **API structure** is fully described in the `openapi.yaml` file.
 
-## Key Code Examples and Function Descriptions
-
-Below are practical code examples and explanations for the most important functions in NoteKeeper, covering backend, frontend services, React components, and data models.
-
 ### Backend (Node.js + Express)
 
 #### 1. Database Initialization
@@ -361,7 +349,6 @@ Below are practical code examples and explanations for the most important functi
 Creates tables for categories, posts, and images if they do not exist.
 
 ```js
-// server.js
 const db = new sqlite3.Database("../database/note-keeper.db");
 db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS categories (
@@ -392,7 +379,6 @@ db.serialize(() => {
 Handles getting, creating, updating, and deleting notes.
 
 ```js
-// Get all notes
 app.get("/api/posts", (req, res) => {
   db.all("SELECT * FROM posts", [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -400,7 +386,6 @@ app.get("/api/posts", (req, res) => {
   });
 });
 
-// Add a new note
 app.post("/api/posts", (req, res) => {
   const { id, title, content, categoryId } = req.body;
   db.run(
@@ -413,7 +398,6 @@ app.post("/api/posts", (req, res) => {
   );
 });
 
-// Edit a note
 app.put("/api/posts/:id", (req, res) => {
   const { title, content, categoryId } = req.body;
   db.run(
@@ -426,7 +410,6 @@ app.put("/api/posts/:id", (req, res) => {
   );
 });
 
-// Delete a note
 app.delete("/api/posts/:id", (req, res) => {
   db.run("DELETE FROM posts WHERE id=?", [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -442,7 +425,6 @@ app.delete("/api/posts/:id", (req, res) => {
 Handles getting, creating, updating, and deleting categories.
 
 ```js
-// Get all categories
 app.get("/api/categories", (req, res) => {
   db.all("SELECT * FROM categories", [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -450,7 +432,6 @@ app.get("/api/categories", (req, res) => {
   });
 });
 
-// Add a new category
 app.post("/api/categories", (req, res) => {
   const { id, name, color, icon, description } = req.body;
   db.run(
@@ -463,7 +444,6 @@ app.post("/api/categories", (req, res) => {
   );
 });
 
-// Edit a category
 app.put("/api/categories/:id", (req, res) => {
   const { name, color, icon, description } = req.body;
   db.run(
@@ -476,7 +456,6 @@ app.put("/api/categories/:id", (req, res) => {
   );
 });
 
-// Delete a category
 app.delete("/api/categories/:id", (req, res) => {
   db.run("DELETE FROM categories WHERE id=?", [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -492,7 +471,6 @@ app.delete("/api/categories/:id", (req, res) => {
 Handles getting, creating, and deleting images.
 
 ```js
-// Get all images
 app.get("/api/images", (req, res) => {
   db.all("SELECT * FROM images", [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -500,7 +478,6 @@ app.get("/api/images", (req, res) => {
   });
 });
 
-// Get images for a specific post
 app.get("/api/images/:postId", (req, res) => {
   db.all(
     "SELECT * FROM images WHERE postId=?",
@@ -512,7 +489,6 @@ app.get("/api/images/:postId", (req, res) => {
   );
 });
 
-// Add a new image
 app.post("/api/images", (req, res) => {
   const { id, postId, imageUrl } = req.body;
   db.run(
@@ -525,7 +501,6 @@ app.post("/api/images", (req, res) => {
   );
 });
 
-// Delete an image
 app.delete("/api/images/:id", (req, res) => {
   db.run("DELETE FROM images WHERE id=?", [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
@@ -552,7 +527,6 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
 #### 6. Filtering Notes by Category (Advanced Example)
 
 ```js
-// Get notes by category
 app.get("/api/posts/category/:categoryId", (req, res) => {
   db.all(
     "SELECT * FROM posts WHERE categoryId=?",
@@ -570,7 +544,6 @@ app.get("/api/posts/category/:categoryId", (req, res) => {
 #### 7. Error Handling Pattern
 
 ```js
-// Example error response
 if (err) return res.status(500).json({ error: err.message });
 ```
 
@@ -629,7 +602,7 @@ class PostService {
     if (!res.ok) throw new Error("Failed to add image");
     return await res.json();
   }
-  // Upload an image file using FormData
+
   async uploadImage(file) {
     const formData = new FormData();
     formData.append("image", file);
@@ -638,7 +611,7 @@ class PostService {
       body: formData,
     });
     if (!res.ok) throw new Error("Failed to upload image");
-    return await res.json(); // { imageUrl: ... }
+    return await res.json();
   }
 }
 export default new PostService();
@@ -694,7 +667,7 @@ export default new CategoryService();
 
 ### React Components (Frontend UI Logic)
 
-#### 0. PostList.js (Rendering Notes, Handling Edit/Delete, Displaying Images)
+#### PostList.js (Rendering Notes, Handling Edit/Delete, Displaying Images)
 
 ```jsx
 import { useEffect, useState } from "react";
@@ -703,7 +676,6 @@ import postService from "../services/PostService";
 function PostList({ posts, onDeletePost, onEditPost, categories }) {
   const [images, setImages] = useState({});
   useEffect(() => {
-    // Fetch images for all posts
     const fetchImages = async () => {
       const imgMap = {};
       for (const post of posts) {
@@ -743,7 +715,7 @@ function PostList({ posts, onDeletePost, onEditPost, categories }) {
 
 **Explanation:** Renders a list of notes, fetches and displays images for each note, and provides edit/delete actions.
 
-#### 1.5. CategoryManager.js (Editing and Deleting Categories)
+#### CategoryManager.js (Editing and Deleting Categories)
 
 ```jsx
 import { useState } from "react";
@@ -798,56 +770,7 @@ function CategoryManager({ categories, onCategoryChange }) {
 
 **Explanation:** Allows editing and deleting categories. When editing, shows input fields and save/cancel buttons.
 
-#### 0. PostList.js (Rendering Notes, Handling Edit/Delete, Displaying Images)
-
-```jsx
-import { useEffect, useState } from "react";
-import postService from "../services/PostService";
-
-function PostList({ posts, onDeletePost, onEditPost, categories }) {
-  const [images, setImages] = useState({});
-  useEffect(() => {
-    // Fetch images for all posts
-    const fetchImages = async () => {
-      const imgMap = {};
-      for (const post of posts) {
-        imgMap[post.id] = await postService.getImagesByPost(post.id);
-      }
-      setImages(imgMap);
-    };
-    fetchImages();
-  }, [posts]);
-
-  return (
-    <div>
-      {posts.map((post) => (
-        <div key={post.id}>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-          <div>
-            Category: {categories.find((c) => c.id === post.categoryId)?.name}
-          </div>
-          {images[post.id] &&
-            images[post.id].map((img) => (
-              <img
-                key={img.id}
-                src={img.imageUrl}
-                alt=""
-                style={{ maxWidth: 200 }}
-              />
-            ))}
-          <button onClick={() => onEditPost(post)}>Edit</button>
-          <button onClick={() => onDeletePost(post.id)}>Delete</button>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
-**Explanation:** Renders a list of notes, fetches and displays images for each note, and provides edit/delete actions.
-
-#### 1. PostForm.js (Adding and Editing Notes, with Image Upload)
+#### PostForm.js (Adding and Editing Notes, with Image Upload)
 
 ```jsx
 import { useState } from "react";
@@ -867,7 +790,6 @@ function PostForm({ onAddPost, editingPost, onEditPost, categories }) {
     e.preventDefault();
     let imageUrl = "";
     if (imageFile) {
-      // Upload image and get URL
       const uploadRes = await postService.uploadImage(imageFile);
       imageUrl = uploadRes.imageUrl;
     }
@@ -883,7 +805,6 @@ function PostForm({ onAddPost, editingPost, onEditPost, categories }) {
       await onAddPost(post);
     }
     if (imageUrl) {
-      // Save image record in DB
       await postService.addImage({
         id: Date.now().toString(),
         postId: post.id,
@@ -927,7 +848,7 @@ function PostForm({ onAddPost, editingPost, onEditPost, categories }) {
 
 **Explanation:** Handles both adding and editing notes, including uploading an image. Calls the appropriate handler with the note object and, if an image is selected, uploads it and saves its record in the database.
 
-#### 2. DatabasePage.js (Managing Database Records)
+#### DatabasePage.js (Managing Database Records)
 
 ```jsx
 import { useState, useEffect } from "react";
@@ -962,7 +883,6 @@ function DatabasePage() {
     setEditData({});
     fetchTable(table);
   };
-  // ... rendering logic ...
 }
 ```
 
