@@ -2,15 +2,19 @@
 
 # Contents
 
-- [Documentation approaches](##DOCUMENTATION-APPROACHES)
-- [Criteria for good documentation](##CRITERIA-FOR-GOOD-DOCUMENTATION)
-- [Main types of documentation](##MAIN-TYPES-OF-DOCUMENTATION)
-- [Text documentation description of the software operation algorithm](##TEXT-DOCUMENTATION-DESCRIPTION-OF-THE-SOFTWARE-OPERATION-ALGORITHM)
-- [User scenarios Use Case](##USER-SCENARIOS-USE-CASE)
-- [Api documentation](##API-DOCUMENTATION)
-- [Business Process Diagram and BPMN Notation](BUSINESS-PROCESS-DIAGRAM-AND-BPMN-NOTATION)
-- [UML notation sequence diagram](UML-NOTATION-SEQUENCE-DIAGRAM)
-- [Data Models and ER Diagram](DATA-MODELS-AND-ER-DIAGRAM)
+- Part one
+  - [Documentation approaches](##DOCUMENTATION-APPROACHES)
+  - [Criteria for good documentation](##CRITERIA-FOR-GOOD-DOCUMENTATION)
+  - [Main types of documentation](##MAIN-TYPES-OF-DOCUMENTATION)
+  - [Text documentation description of the software operation algorithm](##TEXT-DOCUMENTATION-DESCRIPTION-OF-THE-SOFTWARE-OPERATION-ALGORITHM)
+  - [User scenarios Use Case](##USER-SCENARIOS-USE-CASE)
+  - [Api documentation](##API-DOCUMENTATION)
+  - [Business Process Diagram and BPMN Notation](##BUSINESS-PROCESS-DIAGRAM-AND-BPMN-NOTATION)
+  - [UML notation sequence diagram](##UML-NOTATION-SEQUENCE-DIAGRAM)
+  - [Data Models and ER Diagram](##DATA-MODELS-AND-ER-DIAGRAM)
+- Part two
+  - [What is API?](##WHAT-IS-API?)
+  - [UML Sequence Diagram Sequence](##UML-Sequence-Diagram-Sequence)
 
 ## DOCUMENTATION APPROACHES
 
@@ -651,3 +655,468 @@ belong to several courses.
 Now let's look at the entity of homework results, this entity has a composite primary key, which consists of the identifiers of the homework, student and reviewer, thus forming a unique identifier from these three identifiers. As for the relationships, one homework has many results, because many students do one work, so the results will have a "many-to-one" relationship with the homework and "many-to-one" with the students.
 
 It is also important to pay special attention to the entity of homework results, because this entity is an intermediate table of the relationship between the tables of students and homework, reviewers and homework. That is, there is a many-to-many relationship between the students and homework tables, because one student does many homework assignments, and one homework assignment is done by many students, but to record this data we lack these two entities, so an intermediate table is created, the same rule is true for the homework and reviewers tables: reviewers check many homework assignments, and one assignment from different students is checked by many reviewers.
+
+## WHAT-IS-API?
+
+An API allows different applications and services to work together as if they were part of a single larger application. For example, an API can allow one program to access the functions of another program, even if these programs were created by different developers.
+
+One of the most famous APIs is the Google API, which provides access to a huge number of Google functions and services, such as Google Maps, Google Analytics, Google AdWords, etc.
+
+How does it work? For example, if when developing an application or a website there is a need to display a map with the location of an office or point of sale, you do not need to create a new map, you use the API of ready-made maps and mark the location you need.
+
+Various aggregator sites, such as news or exchange rate aggregators, or
+weather also work through the API, the information provider services transmit it through the API to the aggregator site, which, in this case, is the consumer of
+data.
+
+### Why do you need API documentation?
+
+API documentation is needed so that other developers and users can learn how your API works, what methods it has, what parameters to pass, and what response is expected. This helps to avoid errors and misunderstandings, and also speeds up the development and integration process.
+
+In addition, good documentation can attract more users and partners who can use your API in their projects, if we are talking about public services that your partners or customers are expected to use.
+
+### HTTP Request Methods
+
+Before we dive into the structure of HTTP requests, let's review the main HTTP methods that we most often use when designing, developing, or using REST API services.
+
+**GET**
+
+The HTTP GET method requests a specified resource. Unlike other methods, such as POST, PUT, and DELETE, GET does not change the state of the server or the contents of the data. It is used to retrieve information such as HTML pages, images, files, and so on. A GET request can also include parameters that are passed through the URL, such as ?param=value.
+
+**POST**
+
+The HTTP POST method sends data to the server. It is often used to create new resources or write data to the server. Unlike GET, which can only transfer limited amounts of data, POST can transfer large amounts of data in the body of the request. PUT The PUT HTTP method is used to update a resource on the server. It passes the content that should be replaced on the server. This method is usually used when you want to update an existing resource.
+
+**PATCH**
+
+The PATCH HTTP method is designed to partially update a resource. It allows you to change only certain parts of the resource specified in the request. This method can be useful when you need to make changes to a resource, but do not want to replace the entire resource.
+
+**DELETE**
+
+The DELETE HTTP method is used to delete a resource on the server. It sends
+a request to delete the specified resource, and if the server accepts the request, it
+deletes the resource.
+
+### HTTP Request and Response Structure
+
+In order to correctly document API methods, we need to know the structure of the
+http request and response.
+
+There are several main elements in the HTTP request structure:
+
+- Request method — specifies what action should be performed with the
+  resource (GET, POST, PUT, PATCH, DELETE, etc.).
+- URL — the address of the resource the client is accessing.
+- Request headers — contain information about the request, such as the username
+  and password, the language and encoding of the response, the type of the request content, etc.
+- Request body — contains data that is transferred to the server in the body of the request (for example, when submitting a form or using the POST method).
+- Response status code — an element of the response structure, indicates the result of the request (success, error, etc.) and may contain additional information about the error.
+
+The structure of the request helps us answer the questions that the analyst asks during the service design process:
+
+- What do we want to do? Get data from a resource, create data, update, delete? — Method.
+- Where do we want to get the data from or where do we want to send it? — URL.
+- What do we want to pass in the request? — Request body.
+- In what format do we want to send/receive the data? — Request headers.
+
+Visually, requests look like this:
+
+**GET**
+
+```
+Request:
+GET /api/products HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Answer:
+HTTP/1.1 200 OK
+Content-Type: application/json
+[
+{
+"product_id":1,
+"name":“Product 1”,
+"description":“Description of product 1”
+},
+{
+"product_id":2,
+"name":“Product 2”,
+"description":“Description of product 2”
+}
+]
+```
+
+**POST**
+
+```
+Request:
+POST /api/v1/user/register HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Cache-Control: no-cache
+Postman-Token: 7ef3cb42-f37d-48a0-9377-80d4b6157f13
+
+{
+"username":"JohnDoe",
+"email":"johndoe@example.com",
+"password":“12345678”
+}
+
+Answer:
+HTTP/1.1 201 Created Location: /api/v1/user/123 Content-Type:
+application/json
+
+{
+"message":"User created successfully",
+"user":{
+"id":"123",
+"username":"JohnDoe",
+"email":"johndoe@example.com"
+}
+}
+```
+
+### OpenAPI Notation
+
+OpenAPI is a specification for describing APIs, allowing developers to better understand how to work with them. OpenAPI provides detailed information about API methods, input and output parameters, possible errors, etc.
+
+OpenAPI Notation is a way of writing the OpenAPI specification. It uses a specific syntax and structure to describe the API. The notation allows you to create clear and understandable documents that are easy to read and understand.
+
+One of the main features of the OpenAPI notation is its flexibility. It allows you to describe APIs of any complexity, from simple RESTful services to complex integrations with many parameters and dependencies. The notation also supports the description of both public and private APIs, which makes it universal and applicable to a wide range of tasks.
+
+The OpenAPI specification is written in YAML or JSON formats, these formats are maximally intuitive and easy to study and understand, so such specification can be read by both humans and machines.
+
+Now let's look at the basic elements of the notation.
+
+Metadata
+
+- OpenAPI specification version
+- Info section - general information about the API:
+  - title - service name
+  - description - service description
+  - version - service version
+  - contact - contact information
+
+**Servers**
+
+Base path of the resource
+
+**Paths**
+
+Path to a specific service resource
+
+**Params**
+
+Request parameters - what we pass in the request "at the input"
+
+**Responses**
+
+The method's response to our request.
+
+In our example, we will consider an API for checking students' homework.
+
+At the beginning, we fill in the metadata and enter information about the version of the OpenAPI notation and information about our service
+
+![open api](./img/openapi.png)
+
+The first field "openapi" - here the version of the notation is written. By default,
+swagger itself offers the latest working version when creating documentation.
+
+The "servers" field - here the path to the main resource is written, that is, the path to the API.
+
+If desired, you can create several servers: for the test, pre-combat and combat contours. For familiarization, study and to avoid unnecessary confusion.
+
+In the "title" field we write the name of the API.
+
+In the "description" field we describe in detail the functional purpose of the service.
+The "version" field, as you might guess, means the version of the service.
+
+In the "contact" contacts we can write various details, the developer's mailbox, website, etc.
+
+We also decided to add "tags" to the example right away, which we will need later. In our case, tags are needed to visually separate methods by the resources we work with. You can use tags and thus separate methods into sections by any criteria you like. It looks like this.
+
+![tegs open api](./img/tags_open_api.png)
+
+In the main interface for working with our documentation, we can see that our methods are divided into sections "students" and "tasks" - this is precisely the consequence of
+binding methods to tags that we set at the very beginning of the documentation description.
+
+After that, we need to designate paths, that is, specific resources with which we
+will work, in our case these are tasks, specific homework assignments of students, and students, students who are doing homework.
+
+In the case of the tasks resource, we will also use the tasks/[task_id] resource
+to designate that we are working with a specific resource object.
+
+Methods intended for working with a specific resource are written in the root of a specific path, it looks like this:
+
+![path open api](./img/path_open_api.png)
+
+First, we open the root section "paths", in which specific resources with which we will work are registered. When writing documentation, it is important to take into account the indents, which designate logical levels.
+
+At the next level, we register the first resource "tasks" through the "/" symbol.
+After we have registered specific resources for work, at the next logical level (and indent), we register the methods that we will use to work with the resource.
+
+With the third line in the figure, we begin to describe the method, in this case it is the "get" method. What should be written in the root of the method? We bind the method to the "tasks" tag for convenient use of the interface. I fill in the "summary" and
+"description" fields with the same information, nominally the "summary" field
+is intended for brief information about the method, and the "description" field is for
+detailed information.
+
+In the "parameters" root, we write the parameters that are passed in the request
+to obtain the information we need. In this case, we pass the value of the "reviewer_id" field to get homework assignments that are bound to the reviewer's ID. As a rule, the input parameters contain either the user ID or his token, which he receives as a result of the authentication process. This logic is laid down so that the user receives data that is intended only for him, this is regulated either by writing his identifier in the attributes of objects, or in the access settings for the user level.
+
+Pay attention to lines 9 through 13 to understand how one parameter is written. In line 13, the data type of the input parameter is written, in our case it is a string.
+The description of the method also describes various options for server responses. I decided to use the most common scenarios: successful and unsuccessful, if desired and given the different variability of your services, you can write separate responses for at least each http code.
+
+The service responses within a certain method begin to be described on line
+14 of the figure. We write the response code, in the "description" field we describe the code, then we need to describe an example of a specific response. In our case, this will be a response in json format, as in most cases when working with restful services. In line 18, we just write the response format. Please note that when describing the response example itself, I refer to the Tasks scheme (line 22), which I write just below the main description. It looks like this.
+
+![task open api](./img/task_open_api.png)
+
+First, we describe the required fields for the response. In our case, these are id,
+homework_id, student_id, course_id, reviewer_id, status, result, feedback. Then, we
+describe the properties for each attribute in the "properties" root. Each field
+has properties such as "type" and "example" and an optional "format". We have
+the format of each attribute as a string, which we indicate in the type field, and in the "example" field we write an example of how a particular attribute is filled.
+Below, we can already see how the schema setup looks in json format in the example
+response in the documentation itself.
+
+![json open api](./img/json_open_api.png)
+
+We continue working with the paths root and add the following path to the resource
+/tasks/[task_id] to work with the identifier of a specific task.
+
+![task id open api](./img/task_id_open_api.png)
+
+In terms of the format of the description of this request, get is not much different from the previous one, I use the same scheme when describing the response. The only difference in these two methods is that in one case it is assumed that the response
+comes more than one object, and in this case I get data on a specific object, which I requested in the input parameters. This is the main difference, in the parameters root I write not only reviewer_id, as I did before, I also write task_id to get data for a specific task.
+
+![put open api](./img/put_open_api.png)
+
+In the POST and PUT methods, we keep the same format of the request description, only,
+in addition to the parameters, we must write the request body, since we either create or
+update the resource object. In the request body, I still refer to the Tasks scheme that I created, described above.
+
+Now let's look at the students resource and the get method, with which we request a list of students. In terms of the method description format, we will not see anything new here. We use the "students" tag and the "students" scheme for the response example,
+respectively.
+
+![students open api](./img/students_open_api.png)
+
+The most interesting thing here is precisely in the Students schema, which is used for the method's response example. Let's take a closer look at it.
+
+![components open api](./img/components_open_api.png)
+
+The Students schema is almost the same format as the Tasks schema with one small difference. In line 20 we see a nested Tasks schema, so we nest an array of homework completed by a specific student. In json format it looks like this:
+
+![students json open api](./img/students_json_open_api.png)
+
+In response to the get method, we get back the student ID, the ID of his course, and his completed homework.
+
+That is, when we make a get request for a list of students, we get back the students with the nested homework in the format of an array of data that they complete (see line 5-15 in the screenshot above).
+
+## UML SEQUENCE DIAGRAM SEQUENCE
+
+OpenAPI describes the API from the client's point of view. It defines what requests can be sent, what parameters are passed, what responses are returned, and how to process them. This helps clients understand how to work with the API and simplifies the development process.
+
+UML Sequence, in turn, answers the question "how is this or that service structured?", that is, "what does it do under the hood?", what sources does the API use to provide this or that data, what systems is it integrated with.
+
+Thus, the UML Sequence diagram allows us to visualize the sequence of actions that occur when a certain API method is called.
+
+As we know from the previous lesson, a sequence diagram describes how components interact with each other within a particular system function. This representation is well suited for describing the logic of the API.
+
+Let's also remember what main elements a sequence diagram consists of. A UML sequence diagram consists of the following elements:
+
+- Actors are external entities that interact with the system. They can be users, other systems, or external devices.
+- Objects are instances of classes that are created when the system starts and destroyed when it stops. Objects can be actors, systems, or other elements of a sequence diagram.
+- Lifelines in a sequence diagram show how much time an object or actor (actors in the
+  system) is active in the diagram. It is like a line that starts from the object and goes down the vertical axis as long as the object is active. When the object is no longer active, the lifeline ends.
+- Focus of control is the period of time during which an object performs a specific action, such as calculating or waiting for a response from another object.
+- described in the OpenAPI specification.
+
+GET /students - the method returns a list of students
+
+![uml get students](./img/uml_get_students.png)
+
+Let's describe the sequence diagram scenario:
+
+1. The reviewer, using the user interface, requests a list of students.
+2. The user interface makes a get request to the /students resource in HomeWork API.
+3. HomeWork API receives the request from the user interface and, in turn, requests data from the HomeWork DataBase.
+4. The HomeWork DataBase returns the requested data on the list of students to the HomeWork API.
+5. HomeWork API returns the list of students to the user interface in json format.
+6. The user interface displays the list of students to the reviewer.
+
+GET /tasks - method returns a list of homework to check
+
+![uml get tasks](./img/uml_get_tasks.png)
+
+Let's describe the sequence diagram scenario:
+
+1. The reviewer, using the user interface, requests a list of homework to review.
+2. The user interface makes a get request to the /tasks resource in the HomeWork API.
+3. The HomeWork API receives the request from the user interface and, in turn, requests data from the HomeWork DataBase.
+4. The HomeWork DataBase returns the requested data on the list of homework to review to the HomeWork API.
+5. The HomeWork API returns the list of homework to review in json format to the user interface.
+6. The user interface displays the list of homework to review to the reviewer.
+
+GET /tasks/[task_id] - the method returns a specific task for verification
+
+![uml get task](./img/uml_get_task2.png)
+
+Let's describe the sequence diagram scenario:
+
+1. The reviewer, using the user interface, requests a specific homework to check by its ID.
+2. The user interface makes a get request to the resource /tasks/[task_id] in HomeWork API.
+3. HomeWork API receives the request from the user interface and, in turn, requests data from the HomeWork DataBase.
+4. The HomeWork DataBase returns the requested homework data to the HomeWork API.
+5. HomeWork API returns the homework to the user interface for review in json format.
+6. The user interface displays the requested homework to the reviewer for review.
+
+PUT /tasks/[task_id] - entering feedback on the work
+
+![uml put task](./img/uml_put_task.png)
+
+Let's describe the sequence diagram scenario:
+
+1. The reviewer, using the user interface, leaves feedback on a homework task with a specific task ID.
+2. The user interface makes a put request to the resource /tasks/[task_id] in HomeWork API.
+3. HomeWork API receives the request from the user interface and, in turn, contacts the HomeWork DataBase to update the data.
+4. The HomeWork DataBase returns a notification to the HomeWork API about the successful data update.
+5. HomeWork API returns a successful response code - 200 to the user interface.
+6. The user interface notifies the reviewer about the successful recording of the feedback.
+
+### PlantUML for creating UML Sequence
+
+Let's look at the previously created diagrams in the form of the PlantUML markup language.
+
+GET /students - the method returns a list of students
+
+```
+@startuml
+autonumber
+title "GET /students - метод возвращает список студентов"
+actor "Ревьюер" as reviewer
+box "Internet"
+participant "UI" as ui
+end box
+box Сервер Образовательной Платформы
+participant "HomeWork API" as hw
+database "HomeWork DataBase" as hwdb
+end box
+reviewer -> ui: запрос списка студентов
+activate reviewer
+activate ui
+ui -> hw: GET /students
+activate hw
+hw -> hwdb: запрос списка студентов из базы данных
+activate hwdb
+hwdb --> hw: возвращает список студентов из базы данных
+deactivate hwdb
+hw --> ui: возвращает список студентов в формате json
+deactivate hw
+ui --> reviewer: отображает список студентов
+deactivate ui
+deactivate reviewer
+@enduml
+
+```
+
+GET /tasks - the method returns a list of tasks to check
+
+```
+@startuml
+autonumber
+title "GET /tasks - метод возвращает список домашних работ на
+проверку"
+actor "Ревьюер" as reviewer
+box "Internet"
+participant "UI" as ui
+end box
+box Сервер Образовательной Платформы
+participant "HomeWork API" as hw
+database "HomeWork DataBase" as hwdb
+end box
+reviewer -> ui: запрос списка домашних работ на проверку
+activate reviewer
+activate ui
+ui -> hw: GET /tasks
+activate hw
+hw -> hwdb: запрос списка домашних работ на проверку из базы
+данных
+activate hwdb
+hwdb --> hw: возвращает список домашних работ на проверку из базы
+данных
+deactivate hwdb
+hw --> ui: возвращает список домашних работ на проверку в формате
+json
+deactivate hw
+ui --> reviewer: отображает список домашних работ на проверку
+deactivate ui
+deactivate reviewer
+@enduml
+
+```
+
+GET /tasks/[task_id] method returns a specific task to check
+
+```
+@startuml
+autonumber
+title "GET /tasks/[task_id] - метод возвращает конкретную
+домашнюю работу на проверку"
+actor "Ревьюер" as reviewer
+box "Internet"
+participant "UI" as ui
+end box
+box Сервер Образовательной Платформы
+participant "HomeWork API" as hw
+database "HomeWork DataBase" as hwdb
+end box
+reviewer -> ui: запрос домашней работы
+activate reviewer
+activate ui
+ui -> hw: GET /tasks/[task_id]
+activate hw
+hw -> hwdb: запрос домашней работы из базы данных
+activate hwdb
+hwdb --> hw: возвращает запрашиваемую домашнюю работы из базы
+данных
+deactivate hwdb
+hw --> ui: возвращает запрашиваемую домашних работу в формате
+json
+deactivate hw
+ui --> reviewer: отображает запрашиваемую домашнюю работу для
+проверки
+deactivate ui
+deactivate reviewer
+@enduml
+```
+
+PUT /tasks/[task_id] - entering feedback on the work
+
+```
+@startuml
+autonumber
+title "PUT /tasks/[task_id] - проставление обратной связи по
+работе"
+actor "Ревьюер" as reviewer
+box "Internet"
+participant "UI" as ui
+end box
+box Сервер Образовательной Платформы
+participant "HomeWork API" as hw
+database "HomeWork DataBase" as hwdb
+end box
+reviewer -> ui: обратная связь по домашней работе
+activate reviewer
+activate ui
+ui -> hw: PUT /tasks/[task_id]
+activate hw
+hw -> hwdb: запись обратной связи по домашней работе
+activate hwdb
+hwdb --> hw: уведомление об успешном обновлении
+deactivate hwdb
+hw --> ui: код ответа 200
+deactivate hw
+ui --> reviewer: уведомление ревьюера об успешной записи обратной
+связи
+deactivate ui
+deactivate reviewer
+@enduml
+```

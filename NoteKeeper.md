@@ -5,7 +5,7 @@
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
 - [User Scenarios](#3-user-scenarios)
-- [Yaml diagrams](#4-yaml-diagrams)
+- [UML diagrams](#4-uml-diagrams)
 - [Project Structure Architecture and Operating principle](#5-project-structure-architecture-and-operating-principle)
 - [Data Model and Database Structure](#6-data-model-and-database-structure)
 - [API Documentation](#7-api-documentation)
@@ -128,7 +128,7 @@ The application allows you to:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## 4. УAML DIAGRAMS
+## 4. UML DIAGRAMS
 
 ### Notes
 
@@ -195,7 +195,7 @@ The application allows you to:
 }
 ```
 
-![yaml notes](./img/yaml_notes.png)
+![yaml notes](./img/uml_notes.png)
 
 ### Categories
 
@@ -246,7 +246,7 @@ The application allows you to:
 }
 ```
 
-![yaml categories](./img/yaml_categories.png)
+![yaml categories](./img/uml_categories.png)
 
 ### Database
 
@@ -281,7 +281,7 @@ The application allows you to:
 }
 ```
 
-![yaml database](./img/yaml_database.png)
+![yaml database](./img/uml_database.png)
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
