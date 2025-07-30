@@ -1124,64 +1124,95 @@ SELECT * FROM images;
 
 ## 4. API Documentation
 
-See the full API specification in [openapi.yaml](./openapi.yaml).
+The NoteKeeper backend exposes a RESTful API for managing notes, categories, images, and database records. All data is exchanged in JSON format, and standard HTTP status codes are used for responses. The API is designed to be simple, predictable, and easy to integrate with any frontend or external tool.
 
-The server implements a REST API for working with categories, notes, and images. Examples of main endpoints:
+**Full OpenAPI/Swagger specification:** See [openapi.yaml](./openapi.yaml) for detailed request/response schemas and all available endpoints.
 
-#### **API Endpoints for Database Access and Management**
+### General Principles
+- All endpoints are prefixed with `/api/`.
+- Data is sent and received as JSON (except for file uploads, which use multipart/form-data).
+- Standard HTTP status codes are used: 200 (OK), 201 (Created), 204 (No Content), 400 (Bad Request), 404 (Not Found), 500 (Server Error), etc.
+- On error, the response contains `{ error: "..." }`.
 
-- **Read (GET):**
+### Main Endpoint Groups
 
-  - `/api/db/posts` — get all posts
-  - `/api/db/categories` — get all categories
-  - `/api/db/images` — get all images
+#### Notes (Posts)
+- **Get all notes:**
+  - `GET /api/posts`
+  - Response: Array of note objects
+- **Create a note:**
+  - `POST /api/posts`
+  - Body: `{ id, title, content, categoryId }`
+  - Response: Created note object
+- **Edit a note:**
+  - `PUT /api/posts/:id`
+  - Body: `{ title, content, categoryId }`
+  - Response: Updated note object
+- **Delete a note:**
+  - `DELETE /api/posts/:id`
+  - Response: 204 No Content
 
-- **Delete (DELETE):**
+#### Categories
+- **Get all categories:**
+  - `GET /api/categories`
+- **Create a category:**
+  - `POST /api/categories`
+  - Body: `{ id, name, color, icon, description }`
+- **Edit a category:**
+  - `PUT /api/categories/:id`
+  - Body: `{ name, color, icon, description }`
+- **Delete a category:**
+  - `DELETE /api/categories/:id`
 
-  - `/api/db/:table/:id` — delete a record by id from the specified table (`posts`, `categories`, `images`)
+#### Images
+- **Get all images:**
+  - `GET /api/images`
+- **Get images for a note:**
+  - `GET /api/images/:postId`
+- **Add an image record:**
+  - `POST /api/images`
+  - Body: `{ id, postId, imageUrl }`
+- **Delete an image:**
+  - `DELETE /api/images/:id`
 
-- **Update (PUT):**
+#### File Upload
+- **Upload an image file:**
+  - `POST /api/upload`
+  - Content-Type: multipart/form-data, field: `image`
+  - Response: `{ imageUrl: "/uploads/filename.ext" }`
 
-  - `/api/db/:table/:id` — update a record by id in the specified table.  
-    Send a JSON object with the fields to update (except `id`).
+#### Database Management Endpoints
+- **Get all records from a table:**
+  - `GET /api/db/posts`, `/api/db/categories`, `/api/db/images`
+- **Update a record by id:**
+  - `PUT /api/db/:table/:id`
+  - Body: JSON object with fields to update (except `id`)
+- **Delete a record by id:**
+  - `DELETE /api/db/:table/:id`
 
-- **Create (POST):**
+### Data Relationships and Integrity
+- Each note (`post`) must belong to a category (`categoryId` is a foreign key).
+- Each image must belong to a note (`postId` is a foreign key).
+- Deleting a category will delete all related notes and their images (cascade delete).
+- Deleting a note will delete all related images.
 
-  - Posts, categories, and images are created via their respective API endpoints in the app (see openapi.yaml for details).
+### Example: Creating a Note with an Image
+1. Upload the image file via `POST /api/upload` (multipart/form-data). Get the `imageUrl` from the response.
+2. Create the note via `POST /api/posts` (send note data as JSON).
+3. Add an image record via `POST /api/images` (send `{ id, postId, imageUrl }`).
 
-- **Advanced:**
-  - You can add your own endpoints for custom queries, batch operations, or analytics.
+### Error Handling
+- On error, the API returns a JSON object with an `error` field and an appropriate HTTP status code.
+- Example: `{ "error": "Category not found" }`
 
-#### **Data Relationships and Integrity**
+### Best Practices
+- Always use unique string IDs for all records (e.g., `Date.now().toString()` or UUID).
+- Use the browser interface for quick edits and the database endpoints for advanced operations.
+- Back up your `note-keeper.db` file before making bulk changes.
 
-- **Each post must belong to a category** (`categoryId` is a foreign key).
-- **Each image must belong to a post** (`postId` is a foreign key).
-- **Deleting a category will delete all related posts and their images.**
-- **Deleting a post will delete all related images.**
-
-#### **Best Practices**
-
-- Always back up your `note-keeper.db` file before making bulk changes.
-- Use the browser interface for quick edits and the desktop tools for advanced operations.
-- Use unique string IDs (e.g., `Date.now().toString()` or UUID) for all records.
-
-#### **Troubleshooting**
-
-- **No tables?**  
-  Make sure the server has run at least once and you are in the correct folder.
-- **Failed to fetch table?**  
-  Check that the backend server is running and the endpoints are available.
-- **Foreign key errors?**  
-  Make sure referenced records exist (e.g., don't delete a category that is still used by posts).
-- **Data not updating?**  
-  Refresh the browser page or restart the server after making changes outside the app.
-
-#### **Extending Functionality**
-
-- Add new tables for tags, comments, or user accounts.
-- Implement full-text search or filtering in the browser.
-- Add export/import features for backup and migration.
-- Integrate with cloud storage for images.
+### Extending the API
+- You can add your own endpoints for custom queries, analytics, or batch operations.
+- The OpenAPI spec (`openapi.yaml`) can be used to generate client code or API documentation automatically.
 
 ## 5. How to Run
 
