@@ -4,16 +4,41 @@
 
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
-- [User Scenarios](#user-scenarios-use-cases)
-- [Yaml diagrams](#yaml-diagrams)
-- [Project Structure](#project-structure)
-- [Key Code Examples and Function Descriptions](#key-code-examples-and-function-descriptions)
-- [Data Model & Database Structure](#3-data-model--database-structure)
-- [API Documentation](#4-api-documentation)
+- [User Scenarios](#3-user-scenarios)
+- [Yaml diagrams](#4-yaml-diagrams)
+- [Project Structure Architecture and Operating principle](#5-project-structure-architecture-and-operating-principle)
+- [Data Model and Database Structure](#6-data-model-and-database-structure)
+- [API Documentation](#7-api-documentation)
 
 ## 1. OVERVIEW
 
 NoteKeeper is an application for creating, editing, deleting, and searching notes with user-defined categories. It consists of a React frontend and a Node.js (Express) backend API with SQLite database. Notes and categories are stored persistently in the database and accessed via REST API.
+
+### How to Run
+
+#### Backend
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Start the server:
+   ```
+   node server.js
+   ```
+   Server runs on http://localhost:4000
+
+#### Frontend
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+2. Start the app:
+   ```
+   npm start
+   ```
+   App runs on http://localhost:3000
 
 ## 2. MAIN FEATURES
 
@@ -50,7 +75,7 @@ The application allows you to:
 
 11. React Scripts: A set of scripts that makes it easy to set up and run React applications, including commands for building, testing, and running the application.
 
-## USERS SCENARIOS
+## 3. USERS SCENARIOS
 
 ### Notes
 
@@ -103,7 +128,7 @@ The application allows you to:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## УAML DIAGRAMS
+## 4. УAML DIAGRAMS
 
 ### Notes
 
@@ -260,7 +285,7 @@ The application allows you to:
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
-## PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
+## 5. PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
 
 ```
 note-keeper/
@@ -1059,7 +1084,7 @@ PostService sends a POST request to the API (/api/posts) with the note data.
 The server executes the INSERT INTO posts (title, content, categoryId) VALUES (?, ?, ?); SQL query, adding a new note to the database.
 After successfully adding a note, the component updates the list of notes.
 
-## 3. Data Model & Database Structure
+## 6. DATA MODEL AND DATABASE STRUCTURE
 
 ### Note
 
@@ -1192,7 +1217,7 @@ SELECT * FROM images;
 - Use `.headers on` and `.mode column` for better output formatting.
 - Use `.schema` to see table definitions.
 
-## 4. API Documentation
+## 7. API Documentation
 
 ### Interactive API Documentation (Swagger UI)
 
@@ -1305,29 +1330,3 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
 
 - You can add your own endpoints for custom queries, analytics, or batch operations.
 - The OpenAPI spec (`openapi.yaml`) can be used to generate client code or API documentation automatically.
-
-## 5. How to Run
-
-### Backend
-
-1. Install dependencies:
-   ```
-   npm install
-   ```
-2. Start the server:
-   ```
-   node server.js
-   ```
-   Server runs on http://localhost:4000
-
-### Frontend
-
-1. Install dependencies:
-   ```
-   npm install
-   ```
-2. Start the app:
-   ```
-   npm start
-   ```
-   App runs on http://localhost:3000
