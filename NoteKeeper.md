@@ -1,46 +1,33 @@
 # NoteKeeper Documentation
 
 ## Table of Contents
+
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
 - [User Scenarios (Use Cases)](#user-scenarios-use-cases)
-- [Actual Project Structure](#actual-project-structure)
-- [Application Architecture](#application-architecture)
+- [Project Structure](#project-structure)
 - [Key Code Examples and Function Descriptions](#key-code-examples-and-function-descriptions)
 - [Data Model & Database Structure](#3-data-model--database-structure)
 - [API Documentation](#4-api-documentation)
 
-
 ## 1. Overview
 
-NoteKeeper is a web application for creating, editing, deleting, and searching notes with user-defined categories. It consists of a React frontend and a Node.js (Express) backend API with SQLite database. Notes and categories are stored persistently in the database and accessed via REST API.
+NoteKeeper is an application for creating, editing, deleting, and searching notes with user-defined categories. It consists of a React frontend and a Node.js (Express) backend API with SQLite database. Notes and categories are stored persistently in the database and accessed via REST API.
 
 ## 2. Main Features
 
-- **Search notes:** Users can search notes by title using the search bar in the navigation menu. The list of notes updates in real time as you type.
+The application allows you to:
 
-### User Feedback and Notifications
-- After adding, editing, or deleting a note, a green success message appears at the top of the page and disappears automatically after a few seconds, confirming the operation.
-- When editing a note, a Cancel button is available to abort editing and return to the list of notes without saving changes.
-
-
-The main features of the application are:
-
-- Manage notes: Users can add new notes, edit existing ones, and delete them. Each note contains a title, content, and belongs to a certain category.
-
-- Categories: The application allows you to create and manage categories to which notes can be assigned. Each category has a unique name, color, and (optionally) an icon.
-
-- Filter notes: Users can filter notes by category, making it easier to find and organize information.
-
-- Upload images: When creating or editing a note, users can upload images to be associated with a specific note.
-
-- Database management: The application provides an interface for managing data in the database, including viewing and editing records in tables such as notes, categories, and images.
-
-- Navigation: The application uses React Router to organize navigation between different pages, such as adding a note, managing categories, and browsing the database.
+- Create, edit and delete notes;
+- Create, edit and delete note categories;
+- Search notes by title;
+- Sort notes by categories;
+- Add and delete images to notes;
+- Work with the notes database.
 
 ### Technologies
 
-1. React: The main library for building user interfaces. React allows you to break the interface into components, making it easier to develop and maintain code.
+1. React: The primary library for creating user interfaces. It breaks down the interface into components.
 
 2. React DOM: A library that allows React to interact with the DOM (Document Object Model) of the browser.
 
@@ -54,22 +41,23 @@ The main features of the application are:
 
 7. Multer: Middleware for handling multipart/form-data, which allows you to upload files to the server (for example, images for notes).
 
-8. @testing-library: A suite of tools for testing React components. Lets you write tests that simulate user interactions with the UI.
+8. sqlite3: allows you to create a lightweight database.
 
 9. web-vitals: A library for measuring the performance of web applications, including important metrics like load time, time to first render, and more.
 
-10. React Scripts: A set of scripts that makes it easy to set up and run React applications, including commands for building, testing, and running the application.
+10. swagger: allows you to create interactive application documentation.
 
-## User Scenarios (Use Cases)
+11. React Scripts: A set of scripts that makes it easy to set up and run React applications, including commands for building, testing, and running the application.
 
-### Add and edit Note
+## Users Scenarios (Use Cases)
 
-- The user clicks the Add note button, after which a special form for filling in the required post details is displayed on the screen
+### Notes
+
+- On the start page or when you click the "Add note" button, a special form for filling in the note fields is displayed on the screen. The user sequentially fills in the title and description of the note.
 
 ![add post](./img/add_post.png)
 
-- The user enters the title and content in the form
-- The user clicks the add image button, after which a dialog box opens for selecting an image from the user's computer
+- After filling in the form fields, the user selects an image for the note by clicking the add file button.
 
 ![add image](./img/add_image.png)
 
@@ -77,7 +65,7 @@ The main features of the application are:
 - The user clicks "Add note".
 - After successful addition, a green success message appears at the top of the page.
 
-- The post appears in the posts section
+- After saving, the note goes to the posts page.
 
 ![posts](./img/posts.png)
 
@@ -86,8 +74,7 @@ The main features of the application are:
 - The user clicks the Save button to save the changes or the Cancel button to discard them and return to the list of posts.
 - After successful editing, a green success message appears at the top of the page.
 
-
-### Add Category
+### Categories
 
 - The user selects the Categories section
 
@@ -102,7 +89,7 @@ The main features of the application are:
 - After making changes to the category being edited, the user clicks the Save button to save the changes or the Cancel button to cancel them. The changes will be displayed in the edited category.
 - The user can delete a category by clicking the Delete button opposite its name. The category will be removed from the list of categories.
 
-### Database manager
+### Database
 
 - The user presses the Database button, the active tab with the table of posts will be displayed on the screen
 
@@ -115,7 +102,164 @@ The main features of the application are:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## Actual Project Structure
+## Уaml diagrams
+
+### Notes
+
+```Json
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Add Note with Image",
+      "steps": [
+        "User -> Frontend (React): Open Add Note form",
+        "User -> Frontend (React): Fill title, content, select category, choose image",
+        "Frontend (React) -> Backend (Express API): POST /api/upload (multipart/form-data, image)",
+        "Backend (Express API) -> File Storage (uploads/): Save image file",
+        "Backend (Express API) -> Frontend (React): Return imageUrl",
+        "Frontend (React) -> Backend (Express API): POST /api/posts (note data)",
+        "Backend (Express API) -> Database (SQLite): Insert note",
+        "Backend (Express API) -> Frontend (React): Return created note",
+        "Frontend (React) -> Backend (Express API): POST /api/images (image record: postId, imageUrl)",
+        "Backend (Express API) -> Database (SQLite): Insert image record",
+        "Backend (Express API) -> Frontend (React): Return image record",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Edit Note",
+      "steps": [
+        "User -> Frontend (React): Click Edit on note",
+        "Frontend (React) -> Backend (Express API): PUT /api/posts/{id} (updated note data)",
+        "Backend (Express API) -> Database (SQLite): Update note",
+        "Backend (Express API) -> Frontend (React): Return updated note",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Delete Note",
+      "steps": [
+        "User -> Frontend (React): Click Delete on note",
+        "Frontend (React) -> Backend (Express API): DELETE /api/posts/{id}",
+        "Backend (Express API) -> Database (SQLite): Delete note (cascade delete images)",
+        "Backend (Express API) -> Frontend (React): 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Search/Filter Notes",
+      "steps": [
+        "User -> Frontend (React): Enter search query or select category",
+        "Frontend (React) -> Backend (Express API): GET /api/posts?search=... (or filter locally)",
+        "Backend (Express API) -> Database (SQLite): Query notes",
+        "Backend (Express API) -> Frontend (React): Return filtered notes",
+        "Frontend (React) -> User: Display filtered notes"
+      ]
+    }
+  ]
+}
+```
+
+![yaml notes](./img/yaml_notes.png)
+
+### Categories
+
+```Json
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Add Category",
+      "steps": [
+        "User -> Frontend (React): Open Add Category form",
+        "User -> Frontend (React): Fill name, color, icon, description",
+        "Frontend (React) -> Backend (Express API): POST /api/categories (category data)",
+        "Backend (Express API) -> Database (SQLite): Insert category",
+        "Backend (Express API) -> Frontend (React): Return created category",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Edit Category",
+      "steps": [
+        "User -> Frontend (React): Click Edit on category",
+        "Frontend (React) -> Backend (Express API): PUT /api/categories/{id} (updated category data)",
+        "Backend (Express API) -> Database (SQLite): Update category",
+        "Backend (Express API) -> Frontend (React): Return updated category",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Delete Category",
+      "steps": [
+        "User -> Frontend (React): Click Delete on category",
+        "Frontend (React) -> Backend (Express API): DELETE /api/categories/{id}",
+        "Backend (Express API) -> Database (SQLite): Delete category (cascade delete posts and images)",
+        "Backend (Express API) -> Frontend (React): 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    }
+  ]
+}
+```
+
+![yaml categories](./img/yaml_categories.png)
+
+### Database
+
+```Json
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Database Table Management (View/Edit/Delete)",
+      "steps": [
+        "User -> Frontend (React): Open Database page",
+        "Frontend (React) -> Backend (Express API): GET /api/db/{table} (e.g., posts, categories, images)",
+        "Backend (Express API) -> Database (SQLite): Query all records from table",
+        "Backend (Express API) -> Frontend (React): Return records",
+        "Frontend (React) -> User: Display table data",
+        "User -> Frontend (React): Click Edit/Delete on a record",
+        "Frontend (React) -> Backend (Express API): PUT or DELETE /api/db/{table}/{id} (updated data or delete request)",
+        "Backend (Express API) -> Database (SQLite): Update or delete record",
+        "Backend (Express API) -> Frontend (React): Return updated record or 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    }
+  ]
+}
+```
+
+![yaml database](./img/yaml_database.png)
+
+Visualization of technical processes is made using [todiagram](https://todiagram.com)
+
+## Project Structure
 
 ```
 note-keeper/
@@ -138,42 +282,41 @@ note-keeper/
 │   └── node_modules/
 ├── database/
 │   └── note-keeper.db
-├── img/
-├── openapi.yaml
-├── NoteKeeper.md
-└── README.md
 ```
 
-### What Each File and Folder Is For
+### Purpose
 
 - **backend/** — Contains all backend (server-side) code.
-    - **server.js** — The main Node.js/Express server. Implements all REST API endpoints, database initialization, and file upload logic.
-    - **package.json** — Lists backend dependencies (Express, sqlite3, multer, etc.) and scripts to run the server.
-    - **uploads/** — Stores all images uploaded by users. Files are saved here by the backend and served as static files.
-    - **node_modules/** — Installed backend dependencies (auto-generated).
+
+  - **server.js** — The main Node.js/Express server. Implements all REST API endpoints, database initialization, and file upload logic.
+  - **package.json** — Lists backend dependencies (Express, sqlite3, multer, etc.) and scripts to run the server.
+  - **uploads/** — Stores all images uploaded by users. Files are saved here by the backend and served as static files.
+  - **node_modules/** — Installed backend dependencies (auto-generated).
 
 - **frontend/** — Contains all frontend (client-side) code.
-    - **src/** — Main source code for the React app.
-        - **components/** — All React UI components. Each file implements a part of the user interface and its logic:
-            - **App.js** — The main application component. Handles routing, global state, and high-level logic.
-            - **PostForm.js** — Form for adding/editing notes. Handles form state and submission.
-            - **PostList.js** — Displays a list of notes. Handles rendering, filtering, and user actions (edit/delete).
-            - **PostItem.js** — Renders a single note, including its images and actions.
-            - **CategoryForm.js** — Form for adding a new category.
-            - **CategoryManager.js** — UI for editing and deleting categories.
-            - **DatabasePage.js** — UI for viewing/editing the database tables directly from the browser.
-        - **services/** — API service classes for communicating with the backend:
-            - **PostService.js** — Handles all API requests related to notes and images (CRUD, image upload, etc.).
-            - **CategoryService.js** — Handles all API requests related to categories (CRUD).
-        - **models/** — Data model classes:
-            - **Category.js** — Defines the Category class used throughout the frontend.
-        - **App.css, index.js, index.css** — Styling and entry points for the React app.
-    - **public/** — Static files served by the frontend (HTML, icons, manifest, etc.).
-    - **package.json** — Lists frontend dependencies (React, Bootstrap, etc.) and scripts to run the app.
-    - **node_modules/** — Installed frontend dependencies (auto-generated).
+
+  - **src/** — Main source code for the React app.
+    - **components/** — All React UI components. Each file implements a part of the user interface and its logic:
+      - **App.js** — The main application component. Handles routing, global state, and high-level logic.
+      - **PostForm.js** — Form for adding/editing notes. Handles form state and submission.
+      - **PostList.js** — Displays a list of notes. Handles rendering, filtering, and user actions (edit/delete).
+      - **PostItem.js** — Renders a single note, including its images and actions.
+      - **CategoryForm.js** — Form for adding a new category.
+      - **CategoryManager.js** — UI for editing and deleting categories.
+      - **DatabasePage.js** — UI for viewing/editing the database tables directly from the browser.
+    - **services/** — API service classes for communicating with the backend:
+      - **PostService.js** — Handles all API requests related to notes and images (CRUD, image upload, etc.).
+      - **CategoryService.js** — Handles all API requests related to categories (CRUD).
+    - **models/** — Data model classes:
+      - **Category.js** — Defines the Category class used throughout the frontend.
+    - **App.css, index.js, index.css** — Styling and entry points for the React app.
+  - **public/** — Static files served by the frontend (HTML, icons, manifest, etc.).
+  - **package.json** — Lists frontend dependencies (React, Bootstrap, etc.) and scripts to run the app.
+  - **node_modules/** — Installed frontend dependencies (auto-generated).
 
 - **database/**
-    - **note-keeper.db** — The SQLite database file. Stores all notes, categories, and images.
+
+  - **note-keeper.db** — The SQLite database file. Stores all notes, categories, and images.
 
 - **img/** — Contains screenshots and diagrams used in the documentation.
 - **openapi.yaml** — The OpenAPI (Swagger) specification describing all backend API endpoints, request/response formats, and data models.
@@ -199,117 +342,13 @@ NoteKeeper is a web application for creating, editing, deleting, and searching n
 - **Data Consistency:** All data is persisted in a SQLite database, ensuring that objects remain consistent and available across sessions.
 - **Communication:** All data exchange between frontend and backend is performed in JSON format, making the transfer of objects simple and language-agnostic.
 
-### How the project works technically
+### Technically
 
 - **Frontend (React)** runs separately and communicates with the backend API over HTTP (usually http://localhost:4000).
 - **Backend (Node.js + Express)** implements the REST API, processes requests, performs SQL operations with the database, and stores uploaded images.
 - **Database** is stored in the file `note-keeper/database/note-keeper.db` and is created automatically on the first server launch.
 - **Image upload** is implemented via the `/api/upload` endpoint using Multer. Files are saved in `note-keeper/backend/uploads`, and links to them are stored in the `images` table.
 - **API structure** is fully described in the `openapi.yaml` file.
-
-## 2. Main Features
-
-- **Search notes:** Users can search notes by title using the search bar in the navigation menu. The list of notes updates in real time as you type.
-
-### User Feedback and Notifications
-- After adding, editing, or deleting a note, a green success message appears at the top of the page and disappears automatically after a few seconds, confirming the operation.
-- When editing a note, a Cancel button is available to abort editing and return to the list of notes without saving changes.
-
-
-The main features of the application are:
-
-- Manage notes: Users can add new notes, edit existing ones, and delete them. Each note contains a title, content, and belongs to a certain category.
-
-- Categories: The application allows you to create and manage categories to which notes can be assigned. Each category has a unique name, color, and (optionally) an icon.
-
-- Filter notes: Users can filter notes by category, making it easier to find and organize information.
-
-- Upload images: When creating or editing a note, users can upload images to be associated with a specific note.
-
-- Database management: The application provides an interface for managing data in the database, including viewing and editing records in tables such as notes, categories, and images.
-
-- Navigation: The application uses React Router to organize navigation between different pages, such as adding a note, managing categories, and browsing the database.
-
-### Technologies
-
-1. React: The main library for building user interfaces. React allows you to break the interface into components, making it easier to develop and maintain code.
-
-2. React DOM: A library that allows React to interact with the DOM (Document Object Model) of the browser.
-
-3. React Router: Used to manage the routing in the application, allowing users to navigate between different pages, such as adding a note, managing categories, and browsing a database.
-
-4. Bootstrap: A CSS framework that provides ready-made styles and components for quickly creating a responsive and beautiful interface.
-
-5. Express: A web framework for Node.js that is used to create a server and handle requests to RESTful APIs.
-
-6. CORS (Cross-Origin Resource Sharing): A package for setting up CORS on the server, allowing browsers to make requests to resources from other domains.
-
-7. Multer: Middleware for handling multipart/form-data, which allows you to upload files to the server (for example, images for notes).
-
-8. @testing-library: A suite of tools for testing React components. Lets you write tests that simulate user interactions with the UI.
-
-9. web-vitals: A library for measuring the performance of web applications, including important metrics like load time, time to first render, and more.
-
-10. React Scripts: A set of scripts that makes it easy to set up and run React applications, including commands for building, testing, and running the application.
-
-## User Scenarios (Use Cases)
-
-### Add and edit Note
-
-- The user clicks the Add note button, after which a special form for filling in the required post details is displayed on the screen
-
-![add post](./img/add_post.png)
-
-- The user enters the title and content in the form
-- The user clicks the add image button, after which a dialog box opens for selecting an image from the user's computer
-
-![add image](./img/add_image.png)
-
-- The user selects the post category
-- The user clicks "Add note".
-- After successful addition, a green success message appears at the top of the page.
-
-- The post appears in the posts section
-
-![posts](./img/posts.png)
-
-- The user can edit the post by clicking the Edit button on the Posts page or the Database page
-- The user changes the title, content, and image.
-- The user clicks the Save button to save the changes or the Cancel button to discard them and return to the list of posts.
-- After successful editing, a green success message appears at the top of the page.
-
-
-### Add Category
-
-- The user selects the Categories section
-
-![add category](./img/add_category.png)
-
-- The user enters the name, color, and icon
-- The user clicks the Create Category button and the added category is displayed on the page.
-- In the Manage Categories block, the user can edit the desired category by clicking the Edit button opposite its name. Editing fields will be displayed under all categories.
-
-![edit category](./img/edit_category.png)
-
-- After making changes to the category being edited, the user clicks the Save button to save the changes or the Cancel button to cancel them. The changes will be displayed in the edited category.
-- The user can delete a category by clicking the Delete button opposite its name. The category will be removed from the list of categories.
-
-### Database manager
-
-- The user presses the Database button, the active tab with the table of posts will be displayed on the screen
-
-![database manager](./img/database.png)
-
-- The user selects a tab (posts, categories, images), the corresponding table will be displayed on the screen
-
-![database categories](./img/database_categories.png)
-
-- The user presses the edit button opposite the table name, the row becomes editable
-- The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
-
-## Application Architecture
-
----
 
 ## Key Code Examples and Function Descriptions
 
@@ -318,26 +357,28 @@ Below are practical code examples and explanations for the most important functi
 ### Backend (Node.js + Express)
 
 #### 1. Database Initialization
+
 Creates tables for categories, posts, and images if they do not exist.
+
 ```js
 // server.js
-const db = new sqlite3.Database('../database/note-keeper.db');
+const db = new sqlite3.Database("../database/note-keeper.db");
 db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS categories (
+  db.run(`CREATE TABLE IF NOT EXISTS categories (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         color TEXT NOT NULL,
         icon TEXT,
         description TEXT
     );`);
-    db.run(`CREATE TABLE IF NOT EXISTS posts (
+  db.run(`CREATE TABLE IF NOT EXISTS posts (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         categoryId TEXT NOT NULL,
         FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE
     );`);
-    db.run(`CREATE TABLE IF NOT EXISTS images (
+  db.run(`CREATE TABLE IF NOT EXISTS images (
         id TEXT PRIMARY KEY,
         postId TEXT NOT NULL,
         imageUrl TEXT NOT NULL,
@@ -347,163 +388,192 @@ db.serialize(() => {
 ```
 
 #### 2. CRUD Endpoints for Notes
+
 Handles getting, creating, updating, and deleting notes.
+
 ```js
 // Get all notes
-app.get('/api/posts', (req, res) => {
-    db.all('SELECT * FROM posts', [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+app.get("/api/posts", (req, res) => {
+  db.all("SELECT * FROM posts", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
 // Add a new note
-app.post('/api/posts', (req, res) => {
-    const { id, title, content, categoryId } = req.body;
-    db.run('INSERT INTO posts (id, title, content, categoryId) VALUES (?, ?, ?, ?)',
-        [id, title, content, categoryId],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ id, title, content, categoryId });
-        }
-    );
+app.post("/api/posts", (req, res) => {
+  const { id, title, content, categoryId } = req.body;
+  db.run(
+    "INSERT INTO posts (id, title, content, categoryId) VALUES (?, ?, ?, ?)",
+    [id, title, content, categoryId],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ id, title, content, categoryId });
+    }
+  );
 });
 
 // Edit a note
-app.put('/api/posts/:id', (req, res) => {
-    const { title, content, categoryId } = req.body;
-    db.run('UPDATE posts SET title=?, content=?, categoryId=? WHERE id=?',
-        [title, content, categoryId, req.params.id],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: req.params.id, title, content, categoryId });
-        }
-    );
+app.put("/api/posts/:id", (req, res) => {
+  const { title, content, categoryId } = req.body;
+  db.run(
+    "UPDATE posts SET title=?, content=?, categoryId=? WHERE id=?",
+    [title, content, categoryId, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: req.params.id, title, content, categoryId });
+    }
+  );
 });
 
 // Delete a note
-app.delete('/api/posts/:id', (req, res) => {
-    db.run('DELETE FROM posts WHERE id=?', [req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(204).end();
-    });
+app.delete("/api/posts/:id", (req, res) => {
+  db.run("DELETE FROM posts WHERE id=?", [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(204).end();
+  });
 });
 ```
+
 **Explanation:** These endpoints allow the frontend to fetch, create, update, and delete notes. Similar endpoints exist for categories and images.
 
 #### 3. CRUD Endpoints for Categories
+
 Handles getting, creating, updating, and deleting categories.
+
 ```js
 // Get all categories
-app.get('/api/categories', (req, res) => {
-    db.all('SELECT * FROM categories', [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+app.get("/api/categories", (req, res) => {
+  db.all("SELECT * FROM categories", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
 // Add a new category
-app.post('/api/categories', (req, res) => {
-    const { id, name, color, icon, description } = req.body;
-    db.run('INSERT INTO categories (id, name, color, icon, description) VALUES (?, ?, ?, ?, ?)',
-        [id, name, color, icon, description],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ id, name, color, icon, description });
-        }
-    );
+app.post("/api/categories", (req, res) => {
+  const { id, name, color, icon, description } = req.body;
+  db.run(
+    "INSERT INTO categories (id, name, color, icon, description) VALUES (?, ?, ?, ?, ?)",
+    [id, name, color, icon, description],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ id, name, color, icon, description });
+    }
+  );
 });
 
 // Edit a category
-app.put('/api/categories/:id', (req, res) => {
-    const { name, color, icon, description } = req.body;
-    db.run('UPDATE categories SET name=?, color=?, icon=?, description=? WHERE id=?',
-        [name, color, icon, description, req.params.id],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json({ id: req.params.id, name, color, icon, description });
-        }
-    );
+app.put("/api/categories/:id", (req, res) => {
+  const { name, color, icon, description } = req.body;
+  db.run(
+    "UPDATE categories SET name=?, color=?, icon=?, description=? WHERE id=?",
+    [name, color, icon, description, req.params.id],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ id: req.params.id, name, color, icon, description });
+    }
+  );
 });
 
 // Delete a category
-app.delete('/api/categories/:id', (req, res) => {
-    db.run('DELETE FROM categories WHERE id=?', [req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(204).end();
-    });
+app.delete("/api/categories/:id", (req, res) => {
+  db.run("DELETE FROM categories WHERE id=?", [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(204).end();
+  });
 });
 ```
+
 **Explanation:** These endpoints allow the frontend to fetch, create, update, and delete categories.
 
 #### 4. CRUD Endpoints for Images
+
 Handles getting, creating, and deleting images.
+
 ```js
 // Get all images
-app.get('/api/images', (req, res) => {
-    db.all('SELECT * FROM images', [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+app.get("/api/images", (req, res) => {
+  db.all("SELECT * FROM images", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
 // Get images for a specific post
-app.get('/api/images/:postId', (req, res) => {
-    db.all('SELECT * FROM images WHERE postId=?', [req.params.postId], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+app.get("/api/images/:postId", (req, res) => {
+  db.all(
+    "SELECT * FROM images WHERE postId=?",
+    [req.params.postId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
 });
 
 // Add a new image
-app.post('/api/images', (req, res) => {
-    const { id, postId, imageUrl } = req.body;
-    db.run('INSERT INTO images (id, postId, imageUrl) VALUES (?, ?, ?)',
-        [id, postId, imageUrl],
-        function (err) {
-            if (err) return res.status(500).json({ error: err.message });
-            res.status(201).json({ id, postId, imageUrl });
-        }
-    );
+app.post("/api/images", (req, res) => {
+  const { id, postId, imageUrl } = req.body;
+  db.run(
+    "INSERT INTO images (id, postId, imageUrl) VALUES (?, ?, ?)",
+    [id, postId, imageUrl],
+    function (err) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.status(201).json({ id, postId, imageUrl });
+    }
+  );
 });
 
 // Delete an image
-app.delete('/api/images/:id', (req, res) => {
-    db.run('DELETE FROM images WHERE id=?', [req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(204).end();
-    });
+app.delete("/api/images/:id", (req, res) => {
+  db.run("DELETE FROM images WHERE id=?", [req.params.id], function (err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.status(204).end();
+  });
 });
 ```
+
 **Explanation:** These endpoints allow the frontend to manage images associated with notes.
 
 #### 5. Image Upload Endpoint
+
 Handles file uploads and returns the image URL.
+
 ```js
-app.post('/api/upload', upload.single('image'), (req, res) => {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-    res.json({ imageUrl: `/uploads/${req.file.filename}` });
+app.post("/api/upload", upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  res.json({ imageUrl: `/uploads/${req.file.filename}` });
 });
 ```
+
 **Explanation:** The frontend sends a multipart/form-data request with an image. The backend saves the file and returns its URL for storage in the database.
 
 #### 6. Filtering Notes by Category (Advanced Example)
+
 ```js
 // Get notes by category
-app.get('/api/posts/category/:categoryId', (req, res) => {
-    db.all('SELECT * FROM posts WHERE categoryId=?', [req.params.categoryId], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+app.get("/api/posts/category/:categoryId", (req, res) => {
+  db.all(
+    "SELECT * FROM posts WHERE categoryId=?",
+    [req.params.categoryId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
 });
 ```
+
 **Explanation:** This endpoint allows the frontend to fetch only notes belonging to a specific category.
 
 #### 7. Error Handling Pattern
+
 ```js
 // Example error response
 if (err) return res.status(500).json({ error: err.message });
 ```
+
 **Explanation:** All endpoints use this pattern to return a clear error message and status code if something goes wrong.
 
 ---
@@ -511,104 +581,113 @@ if (err) return res.status(500).json({ error: err.message });
 ### Frontend Services (API Communication)
 
 #### 1. PostService.js
+
 Handles all API requests related to notes and images.
+
 ```js
 class PostService {
-    async getPosts() {
-        const res = await fetch('http://localhost:4000/api/posts');
-        if (!res.ok) throw new Error('Failed to fetch posts');
-        return await res.json();
-    }
-    async addPost(post) {
-        const res = await fetch('http://localhost:4000/api/posts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(post)
-        });
-        if (!res.ok) throw new Error('Failed to add post');
-        return await res.json();
-    }
-    async editPost(post) {
-        const res = await fetch(`http://localhost:4000/api/posts/${post.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(post)
-        });
-        if (!res.ok) throw new Error('Failed to edit post');
-        return await res.json();
-    }
-    async deletePost(id) {
-        const res = await fetch(`http://localhost:4000/api/posts/${id}`, {
-            method: 'DELETE'
-        });
-        if (!res.ok) throw new Error('Failed to delete post');
-    }
-    async getImagesByPost(postId) {
-        const res = await fetch(`http://localhost:4000/api/images/${postId}`);
-        if (!res.ok) throw new Error('Failed to fetch images');
-        return await res.json();
-    }
-    async addImage(image) {
-        const res = await fetch('http://localhost:4000/api/images', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(image)
-        });
-        if (!res.ok) throw new Error('Failed to add image');
-        return await res.json();
-    }
-    // Upload an image file using FormData
-    async uploadImage(file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        const res = await fetch('http://localhost:4000/api/upload', {
-            method: 'POST',
-            body: formData
-        });
-        if (!res.ok) throw new Error('Failed to upload image');
-        return await res.json(); // { imageUrl: ... }
-    }
+  async getPosts() {
+    const res = await fetch("http://localhost:4000/api/posts");
+    if (!res.ok) throw new Error("Failed to fetch posts");
+    return await res.json();
+  }
+  async addPost(post) {
+    const res = await fetch("http://localhost:4000/api/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(post),
+    });
+    if (!res.ok) throw new Error("Failed to add post");
+    return await res.json();
+  }
+  async editPost(post) {
+    const res = await fetch(`http://localhost:4000/api/posts/${post.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(post),
+    });
+    if (!res.ok) throw new Error("Failed to edit post");
+    return await res.json();
+  }
+  async deletePost(id) {
+    const res = await fetch(`http://localhost:4000/api/posts/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete post");
+  }
+  async getImagesByPost(postId) {
+    const res = await fetch(`http://localhost:4000/api/images/${postId}`);
+    if (!res.ok) throw new Error("Failed to fetch images");
+    return await res.json();
+  }
+  async addImage(image) {
+    const res = await fetch("http://localhost:4000/api/images", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(image),
+    });
+    if (!res.ok) throw new Error("Failed to add image");
+    return await res.json();
+  }
+  // Upload an image file using FormData
+  async uploadImage(file) {
+    const formData = new FormData();
+    formData.append("image", file);
+    const res = await fetch("http://localhost:4000/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) throw new Error("Failed to upload image");
+    return await res.json(); // { imageUrl: ... }
+  }
 }
 export default new PostService();
 ```
+
 **Explanation:** This service provides all the methods needed to interact with notes and images from the frontend, including uploading images using FormData, and abstracts away the details of HTTP requests.
 
 #### 2. CategoryService.js
+
 Handles all API requests related to categories.
+
 ```js
 class CategoryService {
-    async getCategories() {
-        const res = await fetch('http://localhost:4000/api/categories');
-        if (!res.ok) throw new Error('Failed to fetch categories');
-        return await res.json();
-    }
-    async addCategory(category) {
-        const res = await fetch('http://localhost:4000/api/categories', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(category)
-        });
-        if (!res.ok) throw new Error('Failed to add category');
-        return await res.json();
-    }
-    async editCategory(category) {
-        const res = await fetch(`http://localhost:4000/api/categories/${category.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(category)
-        });
-        if (!res.ok) throw new Error('Failed to edit category');
-        return await res.json();
-    }
-    async deleteCategory(id) {
-        const res = await fetch(`http://localhost:4000/api/categories/${id}`, {
-            method: 'DELETE'
-        });
-        if (!res.ok) throw new Error('Failed to delete category');
-    }
+  async getCategories() {
+    const res = await fetch("http://localhost:4000/api/categories");
+    if (!res.ok) throw new Error("Failed to fetch categories");
+    return await res.json();
+  }
+  async addCategory(category) {
+    const res = await fetch("http://localhost:4000/api/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(category),
+    });
+    if (!res.ok) throw new Error("Failed to add category");
+    return await res.json();
+  }
+  async editCategory(category) {
+    const res = await fetch(
+      `http://localhost:4000/api/categories/${category.id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(category),
+      }
+    );
+    if (!res.ok) throw new Error("Failed to edit category");
+    return await res.json();
+  }
+  async deleteCategory(id) {
+    const res = await fetch(`http://localhost:4000/api/categories/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete category");
+  }
 }
 export default new CategoryService();
 ```
+
 **Explanation:** This service provides all the methods needed to interact with categories from the frontend.
 
 ---
@@ -616,211 +695,277 @@ export default new CategoryService();
 ### React Components (Frontend UI Logic)
 
 #### 0. PostList.js (Rendering Notes, Handling Edit/Delete, Displaying Images)
+
 ```jsx
-import { useEffect, useState } from 'react';
-import postService from '../services/PostService';
+import { useEffect, useState } from "react";
+import postService from "../services/PostService";
 
 function PostList({ posts, onDeletePost, onEditPost, categories }) {
-    const [images, setImages] = useState({});
-    useEffect(() => {
-        // Fetch images for all posts
-        const fetchImages = async () => {
-            const imgMap = {};
-            for (const post of posts) {
-                imgMap[post.id] = await postService.getImagesByPost(post.id);
-            }
-            setImages(imgMap);
-        };
-        fetchImages();
-    }, [posts]);
+  const [images, setImages] = useState({});
+  useEffect(() => {
+    // Fetch images for all posts
+    const fetchImages = async () => {
+      const imgMap = {};
+      for (const post of posts) {
+        imgMap[post.id] = await postService.getImagesByPost(post.id);
+      }
+      setImages(imgMap);
+    };
+    fetchImages();
+  }, [posts]);
 
-    return (
-        <div>
-            {posts.map(post => (
-                <div key={post.id}>
-                    <h3>{post.title}</h3>
-                    <p>{post.content}</p>
-                    <div>Category: {categories.find(c => c.id === post.categoryId)?.name}</div>
-                    {images[post.id] && images[post.id].map(img => (
-                        <img key={img.id} src={img.imageUrl} alt="" style={{ maxWidth: 200 }} />
-                    ))}
-                    <button onClick={() => onEditPost(post)}>Edit</button>
-                    <button onClick={() => onDeletePost(post.id)}>Delete</button>
-                </div>
+  return (
+    <div>
+      {posts.map((post) => (
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+          <div>
+            Category: {categories.find((c) => c.id === post.categoryId)?.name}
+          </div>
+          {images[post.id] &&
+            images[post.id].map((img) => (
+              <img
+                key={img.id}
+                src={img.imageUrl}
+                alt=""
+                style={{ maxWidth: 200 }}
+              />
             ))}
+          <button onClick={() => onEditPost(post)}>Edit</button>
+          <button onClick={() => onDeletePost(post.id)}>Delete</button>
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 ```
+
 **Explanation:** Renders a list of notes, fetches and displays images for each note, and provides edit/delete actions.
 
 #### 1.5. CategoryManager.js (Editing and Deleting Categories)
+
 ```jsx
-import { useState } from 'react';
-import categoryService from '../services/CategoryService';
+import { useState } from "react";
+import categoryService from "../services/CategoryService";
 
 function CategoryManager({ categories, onCategoryChange }) {
-    const [editingId, setEditingId] = useState(null);
-    const [editData, setEditData] = useState({});
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
 
-    const handleEditClick = (cat) => {
-        setEditingId(cat.id);
-        setEditData({ ...cat });
-    };
-    const handleEditSave = async () => {
-        await categoryService.editCategory(editData);
-        setEditingId(null);
-        setEditData({});
-        onCategoryChange();
-    };
-    const handleDelete = async (id) => {
-        await categoryService.deleteCategory(id);
-        onCategoryChange();
-    };
-    return (
-        <div>
-            {categories.map(cat => (
-                <div key={cat.id}>
-                    {editingId === cat.id ? (
-                        <>
-                            <input value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} />
-                            <button onClick={handleEditSave}>Save</button>
-                            <button onClick={() => setEditingId(null)}>Cancel</button>
-                        </>
-                    ) : (
-                        <>
-                            <span>{cat.name}</span>
-                            <button onClick={() => handleEditClick(cat)}>Edit</button>
-                            <button onClick={() => handleDelete(cat.id)}>Delete</button>
-                        </>
-                    )}
-                </div>
-            ))}
+  const handleEditClick = (cat) => {
+    setEditingId(cat.id);
+    setEditData({ ...cat });
+  };
+  const handleEditSave = async () => {
+    await categoryService.editCategory(editData);
+    setEditingId(null);
+    setEditData({});
+    onCategoryChange();
+  };
+  const handleDelete = async (id) => {
+    await categoryService.deleteCategory(id);
+    onCategoryChange();
+  };
+  return (
+    <div>
+      {categories.map((cat) => (
+        <div key={cat.id}>
+          {editingId === cat.id ? (
+            <>
+              <input
+                value={editData.name}
+                onChange={(e) =>
+                  setEditData({ ...editData, name: e.target.value })
+                }
+              />
+              <button onClick={handleEditSave}>Save</button>
+              <button onClick={() => setEditingId(null)}>Cancel</button>
+            </>
+          ) : (
+            <>
+              <span>{cat.name}</span>
+              <button onClick={() => handleEditClick(cat)}>Edit</button>
+              <button onClick={() => handleDelete(cat.id)}>Delete</button>
+            </>
+          )}
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 ```
+
 **Explanation:** Allows editing and deleting categories. When editing, shows input fields and save/cancel buttons.
 
-
 #### 0. PostList.js (Rendering Notes, Handling Edit/Delete, Displaying Images)
+
 ```jsx
-import { useEffect, useState } from 'react';
-import postService from '../services/PostService';
+import { useEffect, useState } from "react";
+import postService from "../services/PostService";
 
 function PostList({ posts, onDeletePost, onEditPost, categories }) {
-    const [images, setImages] = useState({});
-    useEffect(() => {
-        // Fetch images for all posts
-        const fetchImages = async () => {
-            const imgMap = {};
-            for (const post of posts) {
-                imgMap[post.id] = await postService.getImagesByPost(post.id);
-            }
-            setImages(imgMap);
-        };
-        fetchImages();
-    }, [posts]);
+  const [images, setImages] = useState({});
+  useEffect(() => {
+    // Fetch images for all posts
+    const fetchImages = async () => {
+      const imgMap = {};
+      for (const post of posts) {
+        imgMap[post.id] = await postService.getImagesByPost(post.id);
+      }
+      setImages(imgMap);
+    };
+    fetchImages();
+  }, [posts]);
 
-    return (
-        <div>
-            {posts.map(post => (
-                <div key={post.id}>
-                    <h3>{post.title}</h3>
-                    <p>{post.content}</p>
-                    <div>Category: {categories.find(c => c.id === post.categoryId)?.name}</div>
-                    {images[post.id] && images[post.id].map(img => (
-                        <img key={img.id} src={img.imageUrl} alt="" style={{ maxWidth: 200 }} />
-                    ))}
-                    <button onClick={() => onEditPost(post)}>Edit</button>
-                    <button onClick={() => onDeletePost(post.id)}>Delete</button>
-                </div>
+  return (
+    <div>
+      {posts.map((post) => (
+        <div key={post.id}>
+          <h3>{post.title}</h3>
+          <p>{post.content}</p>
+          <div>
+            Category: {categories.find((c) => c.id === post.categoryId)?.name}
+          </div>
+          {images[post.id] &&
+            images[post.id].map((img) => (
+              <img
+                key={img.id}
+                src={img.imageUrl}
+                alt=""
+                style={{ maxWidth: 200 }}
+              />
             ))}
+          <button onClick={() => onEditPost(post)}>Edit</button>
+          <button onClick={() => onDeletePost(post.id)}>Delete</button>
         </div>
-    );
+      ))}
+    </div>
+  );
 }
 ```
+
 **Explanation:** Renders a list of notes, fetches and displays images for each note, and provides edit/delete actions.
 
 #### 1. PostForm.js (Adding and Editing Notes, with Image Upload)
+
 ```jsx
-import { useState } from 'react';
-import postService from '../services/PostService';
+import { useState } from "react";
+import postService from "../services/PostService";
 
 function PostForm({ onAddPost, editingPost, onEditPost, categories }) {
-    const [title, setTitle] = useState(editingPost ? editingPost.title : '');
-    const [content, setContent] = useState(editingPost ? editingPost.content : '');
-    const [categoryId, setCategoryId] = useState(editingPost ? editingPost.categoryId : (categories[0]?.id || ''));
-    const [imageFile, setImageFile] = useState(null);
+  const [title, setTitle] = useState(editingPost ? editingPost.title : "");
+  const [content, setContent] = useState(
+    editingPost ? editingPost.content : ""
+  );
+  const [categoryId, setCategoryId] = useState(
+    editingPost ? editingPost.categoryId : categories[0]?.id || ""
+  );
+  const [imageFile, setImageFile] = useState(null);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        let imageUrl = '';
-        if (imageFile) {
-            // Upload image and get URL
-            const uploadRes = await postService.uploadImage(imageFile);
-            imageUrl = uploadRes.imageUrl;
-        }
-        const post = { id: editingPost ? editingPost.id : Date.now().toString(), title, content, categoryId };
-        if (editingPost) {
-            await onEditPost(post);
-        } else {
-            await onAddPost(post);
-        }
-        if (imageUrl) {
-            // Save image record in DB
-            await postService.addImage({ id: Date.now().toString(), postId: post.id, imageUrl });
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let imageUrl = "";
+    if (imageFile) {
+      // Upload image and get URL
+      const uploadRes = await postService.uploadImage(imageFile);
+      imageUrl = uploadRes.imageUrl;
+    }
+    const post = {
+      id: editingPost ? editingPost.id : Date.now().toString(),
+      title,
+      content,
+      categoryId,
     };
+    if (editingPost) {
+      await onEditPost(post);
+    } else {
+      await onAddPost(post);
+    }
+    if (imageUrl) {
+      // Save image record in DB
+      await postService.addImage({
+        id: Date.now().toString(),
+        postId: post.id,
+        imageUrl,
+      });
+    }
+  };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" />
-            <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="Content" />
-            <select value={categoryId} onChange={e => setCategoryId(e.target.value)}>
-                {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
-            </select>
-            <input type="file" accept="image/*" onChange={e => setImageFile(e.target.files[0])} />
-            <button type="submit">{editingPost ? 'Save' : 'Add'} Note</button>
-        </form>
-    );
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Title"
+      />
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Content"
+      />
+      <select
+        value={categoryId}
+        onChange={(e) => setCategoryId(e.target.value)}
+      >
+        {categories.map((cat) => (
+          <option key={cat.id} value={cat.id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setImageFile(e.target.files[0])}
+      />
+      <button type="submit">{editingPost ? "Save" : "Add"} Note</button>
+    </form>
+  );
 }
 ```
+
 **Explanation:** Handles both adding and editing notes, including uploading an image. Calls the appropriate handler with the note object and, if an image is selected, uploads it and saves its record in the database.
 
 #### 2. DatabasePage.js (Managing Database Records)
+
 ```jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 function DatabasePage() {
-    const [table, setTable] = useState('posts');
-    const [data, setData] = useState([]);
-    const [editRow, setEditRow] = useState(null);
-    const [editData, setEditData] = useState({});
+  const [table, setTable] = useState("posts");
+  const [data, setData] = useState([]);
+  const [editRow, setEditRow] = useState(null);
+  const [editData, setEditData] = useState({});
 
-    const fetchTable = async (tableKey) => {
-        const res = await fetch(`http://localhost:4000/api/db/${tableKey}`);
-        setData(await res.json());
-    };
-    useEffect(() => { fetchTable(table); }, [table]);
+  const fetchTable = async (tableKey) => {
+    const res = await fetch(`http://localhost:4000/api/db/${tableKey}`);
+    setData(await res.json());
+  };
+  useEffect(() => {
+    fetchTable(table);
+  }, [table]);
 
-    const handleDelete = async (id) => {
-        await fetch(`http://localhost:4000/api/db/${table}/${id}`, { method: 'DELETE' });
-        fetchTable(table);
-    };
-    const handleEditSave = async () => {
-        await fetch(`http://localhost:4000/api/db/${table}/${editRow}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(editData)
-        });
-        setEditRow(null);
-        setEditData({});
-        fetchTable(table);
-    };
-    // ... rendering logic ...
+  const handleDelete = async (id) => {
+    await fetch(`http://localhost:4000/api/db/${table}/${id}`, {
+      method: "DELETE",
+    });
+    fetchTable(table);
+  };
+  const handleEditSave = async () => {
+    await fetch(`http://localhost:4000/api/db/${table}/${editRow}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editData),
+    });
+    setEditRow(null);
+    setEditData({});
+    fetchTable(table);
+  };
+  // ... rendering logic ...
 }
 ```
+
 **Explanation:** Allows the user to view, edit, and delete any record in the database directly from the browser. The table and fields are dynamic, so this works for posts, categories, and images.
 
 ---
@@ -828,37 +973,42 @@ function DatabasePage() {
 ### Data Model Example
 
 #### Note.js
+
 ```js
 class Note {
-    constructor(id, title, content, categoryId) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.categoryId = categoryId;
-    }
+  constructor(id, title, content, categoryId) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.categoryId = categoryId;
+  }
 }
 export default Note;
 ```
+
 **Explanation:** Represents a note object used throughout the frontend and backend. Now all note creation and manipulation is done via this class, making the code more structured and maintainable.
 
 #### Category.js
+
 ```js
 class Category {
-    constructor(id, name, color, icon = '', description = '') {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.icon = icon;
-        this.description = description;
-    }
+  constructor(id, name, color, icon = "", description = "") {
+    this.id = id;
+    this.name = name;
+    this.color = color;
+    this.icon = icon;
+    this.description = description;
+  }
 }
 export default Category;
 ```
+
 **Explanation:** Represents a category object used throughout the frontend and backend.
 
 ---
 
 **Component and Data Flow Summary:**
+
 - React components use service classes to send and receive objects via the API.
 - The backend receives these objects, processes them, and persists them in the SQLite database.
 - All important operations (CRUD for notes, categories, images, and file upload) are implemented as modular, reusable functions.
@@ -1135,12 +1285,12 @@ SELECT * FROM images;
 - The documentation is always up-to-date with your `openapi.yaml` file.
 - This is the fastest way to explore, test, and debug the API for both frontend and backend developers.
 
-
 The NoteKeeper backend exposes a RESTful API for managing notes, categories, images, and database records. All data is exchanged in JSON format, and standard HTTP status codes are used for responses. The API is designed to be simple, predictable, and easy to integrate with any frontend or external tool.
 
 **Full OpenAPI/Swagger specification:** See [openapi.yaml](./openapi.yaml) for detailed request/response schemas and all available endpoints.
 
 ### General Principles
+
 - All endpoints are prefixed with `/api/`.
 - Data is sent and received as JSON (except for file uploads, which use multipart/form-data).
 - Standard HTTP status codes are used: 200 (OK), 201 (Created), 204 (No Content), 400 (Bad Request), 404 (Not Found), 500 (Server Error), etc.
@@ -1149,6 +1299,7 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
 ### Main Endpoint Groups
 
 #### Notes (Posts)
+
 - **Get all notes:**
   - `GET /api/posts`
   - Response: Array of note objects
@@ -1165,6 +1316,7 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
   - Response: 204 No Content
 
 #### Categories
+
 - **Get all categories:**
   - `GET /api/categories`
 - **Create a category:**
@@ -1177,6 +1329,7 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
   - `DELETE /api/categories/:id`
 
 #### Images
+
 - **Get all images:**
   - `GET /api/images`
 - **Get images for a note:**
@@ -1188,12 +1341,14 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
   - `DELETE /api/images/:id`
 
 #### File Upload
+
 - **Upload an image file:**
   - `POST /api/upload`
   - Content-Type: multipart/form-data, field: `image`
   - Response: `{ imageUrl: "/uploads/filename.ext" }`
 
 #### Database Management Endpoints
+
 - **Get all records from a table:**
   - `GET /api/db/posts`, `/api/db/categories`, `/api/db/images`
 - **Update a record by id:**
@@ -1203,26 +1358,31 @@ The NoteKeeper backend exposes a RESTful API for managing notes, categories, ima
   - `DELETE /api/db/:table/:id`
 
 ### Data Relationships and Integrity
+
 - Each note (`post`) must belong to a category (`categoryId` is a foreign key).
 - Each image must belong to a note (`postId` is a foreign key).
 - Deleting a category will delete all related notes and their images (cascade delete).
 - Deleting a note will delete all related images.
 
 ### Example: Creating a Note with an Image
+
 1. Upload the image file via `POST /api/upload` (multipart/form-data). Get the `imageUrl` from the response.
 2. Create the note via `POST /api/posts` (send note data as JSON).
 3. Add an image record via `POST /api/images` (send `{ id, postId, imageUrl }`).
 
 ### Error Handling
+
 - On error, the API returns a JSON object with an `error` field and an appropriate HTTP status code.
 - Example: `{ "error": "Category not found" }`
 
 ### Best Practices
+
 - Always use unique string IDs for all records (e.g., `Date.now().toString()` or UUID).
 - Use the browser interface for quick edits and the database endpoints for advanced operations.
 - Back up your `note-keeper.db` file before making bulk changes.
 
 ### Extending the API
+
 - You can add your own endpoints for custom queries, analytics, or batch operations.
 - The OpenAPI spec (`openapi.yaml`) can be used to generate client code or API documentation automatically.
 

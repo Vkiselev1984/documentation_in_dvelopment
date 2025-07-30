@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import PostService from '../services/PostService';
+import { useEffect, useState } from 'react';
 import Note from '../models/Note';
+import PostService from '../services/PostService';
 
 const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
     const [title, setTitle] = useState('');
@@ -32,7 +32,7 @@ const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
         setError('');
 
         const postId = editingPost ? editingPost.id : Date.now().toString();
-        // Use Note model
+
         const post = new Note(postId, title, content, selectedCategoryId);
 
         if (editingPost) {
@@ -41,7 +41,7 @@ const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
             await onAddPost(post);
         }
 
-        // Загрузка изображений и создание записей в images
+
         if (imageFiles.length > 0) {
             for (let file of imageFiles) {
                 const formData = new FormData();

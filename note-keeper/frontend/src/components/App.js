@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
-import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate } from 'react-router-dom';
+import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import Note from '../models/Note';
 import categoryService from '../services/CategoryService';
 import postService from '../services/PostService';
 import CategoryForm from './CategoryForm';
@@ -8,7 +9,6 @@ import CategoryManager from './CategoryManager';
 import DatabasePage from './DatabasePage';
 import PostForm from './PostForm';
 import PostList from './PostList';
-import Note from '../models/Note';
 
 const App = () => {
     const [posts, setPosts] = useState([]);
@@ -43,7 +43,6 @@ const App = () => {
         setTimeout(() => setSuccessMessage(''), 2500);
     };
 
-    // Ensure editingPost is always a Note instance
     const handleEditStart = (post) => {
         setEditingPost(new Note(post.id, post.title, post.content, post.categoryId));
         navigate('/add-post');
@@ -68,14 +67,12 @@ const App = () => {
         }
     };
 
-    // Filter posts by category and search query
     const filteredPosts = posts.filter(p => {
         const matchesCategory = categoryFilter ? p.categoryId === categoryFilter : true;
         const matchesSearch = searchQuery.trim() === '' ? true : p.title.toLowerCase().includes(searchQuery.trim().toLowerCase());
         return matchesCategory && matchesSearch;
     });
 
-    // Cancel edit handler
     const handleCancelEdit = () => {
         setEditingPost(null);
         navigate('/posts');
