@@ -6,6 +6,13 @@ NoteKeeper is a web application for creating, editing, deleting, and searching n
 
 ## 2. Main Features
 
+- **Search notes:** Users can search notes by title using the search bar in the navigation menu. The list of notes updates in real time as you type.
+
+### User Feedback and Notifications
+- After adding, editing, or deleting a note, a green success message appears at the top of the page and disappears automatically after a few seconds, confirming the operation.
+- When editing a note, a Cancel button is available to abort editing and return to the list of notes without saving changes.
+
+
 The main features of the application are:
 
 - Manage notes: Users can add new notes, edit existing ones, and delete them. Each note contains a title, content, and belongs to a certain category.
@@ -44,7 +51,7 @@ The main features of the application are:
 
 ## User Scenarios (Use Cases)
 
-### Add and edite Note
+### Add and edit Note
 
 - The user clicks the Add note button, after which a special form for filling in the required post details is displayed on the screen
 
@@ -57,13 +64,17 @@ The main features of the application are:
 
 - The user selects the post category
 - The user clicks "Add note".
+- After successful addition, a green success message appears at the top of the page.
+
 - The post appears in the posts section
 
 ![posts](./img/posts.png)
 
 - The user can edit the post by clicking the Edit button on the Posts page or the Database page
 - The user changes the title, content, and image.
-- The user clicks the Save or Cancel button to save or discard the changes
+- The user clicks the Save button to save the changes or the Cancel button to discard them and return to the list of posts.
+- After successful editing, a green success message appears at the top of the page.
+
 
 ### Add Category
 
@@ -164,7 +175,7 @@ NoteKeeper is a web application for creating, editing, deleting, and searching n
 
 ### Principles of Work
 
-- **Object-Oriented Model:** All main entities in the application—notes, categories, and images—are represented as objects. On the frontend, these are JavaScript classes or plain objects; on the backend, they are JavaScript objects mapped to SQL tables.
+- **Object-Oriented Model:** All main entities in the application—notes, categories, and images—are represented as objects. On the frontend, these are JavaScript classes (e.g., Note, Category); on the backend, they are JavaScript objects mapped to SQL tables.
 - **Object Lifecycle:** Objects are created (e.g., when a user adds a note), transferred between frontend and backend as JSON, stored in the database, and manipulated (edited, deleted, filtered) through API calls.
 - **Data Flow:**
   - The user interacts with the React interface, which manages application state using objects (notes, categories, etc.).
@@ -186,6 +197,13 @@ NoteKeeper is a web application for creating, editing, deleting, and searching n
 - **API structure** is fully described in the `openapi.yaml` file.
 
 ## 2. Main Features
+
+- **Search notes:** Users can search notes by title using the search bar in the navigation menu. The list of notes updates in real time as you type.
+
+### User Feedback and Notifications
+- After adding, editing, or deleting a note, a green success message appears at the top of the page and disappears automatically after a few seconds, confirming the operation.
+- When editing a note, a Cancel button is available to abort editing and return to the list of notes without saving changes.
+
 
 The main features of the application are:
 
@@ -225,7 +243,7 @@ The main features of the application are:
 
 ## User Scenarios (Use Cases)
 
-### Add and edite Note
+### Add and edit Note
 
 - The user clicks the Add note button, after which a special form for filling in the required post details is displayed on the screen
 
@@ -238,13 +256,17 @@ The main features of the application are:
 
 - The user selects the post category
 - The user clicks "Add note".
+- After successful addition, a green success message appears at the top of the page.
+
 - The post appears in the posts section
 
 ![posts](./img/posts.png)
 
 - The user can edit the post by clicking the Edit button on the Posts page or the Database page
 - The user changes the title, content, and image.
-- The user clicks the Save or Cancel button to save or discard the changes
+- The user clicks the Save button to save the changes or the Cancel button to discard them and return to the list of posts.
+- After successful editing, a green success message appears at the top of the page.
+
 
 ### Add Category
 
@@ -794,6 +816,20 @@ function DatabasePage() {
 
 ### Data Model Example
 
+#### Note.js
+```js
+class Note {
+    constructor(id, title, content, categoryId) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.categoryId = categoryId;
+    }
+}
+export default Note;
+```
+**Explanation:** Represents a note object used throughout the frontend and backend. Now all note creation and manipulation is done via this class, making the code more structured and maintainable.
+
 #### Category.js
 ```js
 class Category {
@@ -807,7 +843,7 @@ class Category {
 }
 export default Category;
 ```
-**Explanation:** Represents a category object used throughout the frontend and backend. Other models (note, image) follow a similar pattern.
+**Explanation:** Represents a category object used throughout the frontend and backend.
 
 ---
 
@@ -815,6 +851,8 @@ export default Category;
 - React components use service classes to send and receive objects via the API.
 - The backend receives these objects, processes them, and persists them in the SQLite database.
 - All important operations (CRUD for notes, categories, images, and file upload) are implemented as modular, reusable functions.
+- After adding, editing, or deleting a note, a green success message is shown at the top of the page for a few seconds, confirming the operation.
+- When editing a note, a Cancel button is available to abort editing and return to the list of notes without saving changes.
 - The architecture makes it easy to extend or modify the application by adding new endpoints, models, or UI components.
 
 ---

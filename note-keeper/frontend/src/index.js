@@ -4,8 +4,12 @@ import ReactDOM from 'react-dom/client';
 import App from './components/App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+import { BrowserRouter as Router } from 'react-router-dom';
+
 root.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </React.StrictMode>
 );

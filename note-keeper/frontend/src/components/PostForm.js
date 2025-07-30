@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import PostService from '../services/PostService';
+import Note from '../models/Note';
 
 const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
     const [title, setTitle] = useState('');
@@ -31,12 +32,8 @@ const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
         setError('');
 
         const postId = editingPost ? editingPost.id : Date.now().toString();
-        const post = {
-            id: postId,
-            title,
-            content,
-            categoryId: selectedCategoryId
-        };
+        // Use Note model
+        const post = new Note(postId, title, content, selectedCategoryId);
 
         if (editingPost) {
             await onEditPost(post);
@@ -126,9 +123,14 @@ const PostForm = ({ onAddPost, editingPost, onEditPost, categories }) => {
                 />
             </div>
             {error && <div className="alert alert-danger py-1">{error}</div>}
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary me-2">
                 {editingPost ? 'Save Changes' : 'Add Post'}
             </button>
+            {editingPost && (
+                <button type="button" className="btn btn-secondary" onClick={onCancelEdit}>
+                    Cancel
+                </button>
+            )}
         </form>
     );
 };
