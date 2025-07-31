@@ -4,8 +4,8 @@
 
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
-- [User Scenarios](#3-user-scenarios)
-- [Uml diagram](#4-uml-diagram)
+- [User Scenarios](#3-users-scenarios)
+- [Uml diagrams](#4-uml-diagrams)
 - [Project Structure Architecture and Operating principle](#5-project-structure-architecture-and-operating-principle)
 - [Data Model and Database Structure](#6-data-model-and-database-structure)
 - [API Documentation](#8-api-documentation)
