@@ -5,7 +5,7 @@
 - [Overview](#1-overview)
 - [Main Features](#2-main-features)
 - [User Scenarios](#3-user-scenarios)
-- [UML diagrams](#4-uml-diagrams)
+- [Scenarios diagram](#4-scenarios-diagram)
 - [Documenting object models](#5-documenting-object-models)
 - [Project Structure Architecture and Operating principle](#6-project-structure-architecture-and-operating-principle)
 - [Data Model and Database Structure](#7-data-model-and-database-structure)
@@ -129,9 +129,9 @@ The application allows you to:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## 4. UML DIAGRAMS
+## 4. SCEBARIOS DIAGRAMS
 
-### Notes
+### NOTES
 
 ```Json
 {
@@ -196,9 +196,9 @@ The application allows you to:
 }
 ```
 
-![yaml notes](./img/uml_notes.png)
+![notes](./img/uml_notes.png)
 
-### Categories
+### CATEGORIES
 
 ```Json
 {
@@ -247,9 +247,9 @@ The application allows you to:
 }
 ```
 
-![yaml categories](./img/uml_categories.png)
+![categories](./img/uml_categories.png)
 
-### Database
+### DATABASE
 
 ```Json
 {
@@ -282,7 +282,7 @@ The application allows you to:
 }
 ```
 
-![yaml database](./img/uml_database.png)
+![database](./img/uml_database.png)
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
