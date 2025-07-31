@@ -14,7 +14,9 @@
   - [Data Models and ER Diagram](##DATA-MODELS-AND-ER-DIAGRAM)
 - Part two
   - [What is API?](##WHAT-IS-API?)
-  - [UML Sequence Diagram Sequence](##UML-Sequence-Diagram-Sequence)
+  - [UML Sequence Diagram](##UML-SEQUENCE-DIAGRAM)
+- Part three
+  - [Documenting object models](##DOCUMENTING-OBJECT-MODELS)
 
 ## DOCUMENTATION APPROACHES
 
@@ -910,7 +912,7 @@ In response to the get method, we get back the student ID, the ID of his course,
 
 That is, when we make a get request for a list of students, we get back the students with the nested homework in the format of an array of data that they complete (see line 5-15 in the screenshot above).
 
-## UML SEQUENCE DIAGRAM SEQUENCE
+## UML SEQUENCE DIAGRAM
 
 OpenAPI describes the API from the client's point of view. It defines what requests can be sent, what parameters are passed, what responses are returned, and how to process them. This helps clients understand how to work with the API and simplifies the development process.
 
@@ -1120,3 +1122,42 @@ deactivate ui
 deactivate reviewer
 @enduml
 ```
+
+## DOCUMENTING OBJECT MODELS
+
+### Class Diagram
+
+A class diagram is a graphical representation of an object-oriented system that shows the relationships between different classes and their relationships to each other. It helps developers understand the structure of the system and its components, and identify the relationships between them.
+
+A class diagram typically consists of the following elements:
+
+**Classes** are the main entities that are used in the system. They represent a set of properties and methods that define the functionality of the system.
+
+**Attributes** are properties that belong to each class. They can be represented as circles or rectangles in the diagram.
+
+**Methods** are functions that are defined for each class. They can be represented as arrows pointing to a circle or rectangle that represents the class.
+
+**Associations** are relationships between classes that show which classes are related to each other. They can be represented as lines connecting different classes.
+
+A class diagram is an important tool for analyzing and designing systems. It helps developers understand the structure of the system and its components, as well as identify the relationships between them.
+
+As an example, we will describe the structure of a class diagram for an online store:
+
+- Class “Product” - contains information about the product (name, description, price,
+  category, etc.).
+- Class “Category” - represents the category of goods (for example, “electronics”,
+  “clothing”, etc.).
+- Class “Order” - contains information about placing an order (order number, date,
+  list of goods, etc.).
+- Class “Customer” - describes information about the customer (name, address,
+  phone, etc.).
+- Class “PaymentMethod” - represents the payment method (for example, cash,
+  bank card, etc.).
+- Class “ShippingMethod” - describes the delivery method (for example, courier
+  delivery, pick-up, etc.).
+
+Associations between classes:
+
+- Product has one or more categories (product category).
+- Order contains one or more products (products in order).
+- Customer has one or more orders (placed orders).

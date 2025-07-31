@@ -6,9 +6,10 @@
 - [Main Features](#2-main-features)
 - [User Scenarios](#3-user-scenarios)
 - [UML diagrams](#4-uml-diagrams)
-- [Project Structure Architecture and Operating principle](#5-project-structure-architecture-and-operating-principle)
-- [Data Model and Database Structure](#6-data-model-and-database-structure)
-- [API Documentation](#7-api-documentation)
+- [Documenting object models](#5-documenting-object-models)
+- [Project Structure Architecture and Operating principle](#6-project-structure-architecture-and-operating-principle)
+- [Data Model and Database Structure](#7-data-model-and-database-structure)
+- [API Documentation](#8-api-documentation)
 
 ## 1. OVERVIEW
 
@@ -285,7 +286,222 @@ The application allows you to:
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
-## 5. PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
+## 5. DOCUMENTING OBJECT MODELS
+
+### Component Diagram (Logical Architecture)
+
+![uml component diagram](./img/сomponent_diagram.svg)
+
+```plantuml
+@startuml
+actor User
+
+package "Frontend (React)" {
+  [App]
+  [PostForm]
+  [PostList]
+  [CategoryForm]
+  [CategoryManager]
+  [DatabasePage]
+  [PostService]
+  [CategoryService]
+  [Note]
+  [Category]
+}
+
+package "Backend (Express)" {
+  [ExpressApp]
+  [CategoryController]
+  [PostController]
+  [ImageController]
+  [UploadController]
+  [SwaggerController]
+  [DatabaseService]
+}
+
+database "SQLite DB" as DB
+folder "File Storage" as Storage
+
+User --> [App]
+[App] --> [PostForm]
+[App] --> [PostList]
+[App] --> [CategoryForm]
+[App] --> [CategoryManager]
+[App] --> [DatabasePage]
+[PostForm] ..> [PostService]
+[PostList] ..> [PostService]
+[CategoryForm] ..> [CategoryService]
+[CategoryManager] ..> [CategoryService]
+[PostService] ..> [ExpressApp]
+[CategoryService] ..> [ExpressApp]
+
+[App] --> [ExpressApp] : HTTP (REST API)
+[ExpressApp] --> [CategoryController]
+[ExpressApp] --> [PostController]
+[ExpressApp] --> [ImageController]
+[ExpressApp] --> [UploadController]
+[ExpressApp] --> [SwaggerController]
+[CategoryController] --> [DatabaseService]
+[PostController] --> [DatabaseService]
+[ImageController] --> [DatabaseService]
+[DatabaseService] --> DB
+[UploadController] --> Storage
+@enduml
+```
+
+This component diagram shows the high-level structure and internal organization of the NoteKeeper application.
+
+It includes the main frontend React components, frontend services, backend controllers, database service, and their relationships.
+
+The diagram illustrates how the user interacts with the UI, how components communicate with each other and with the backend, and how data flows through the system.
+
+- User interacts with the main App component.
+- App composes all main UI components: PostForm, PostList, CategoryForm, CategoryManager, and DatabasePage.
+- UI components use service classes (PostService, CategoryService) to communicate with the backend API.
+- Services send HTTP requests to the backend (ExpressApp), which delegates requests to the appropriate controllers.
+- Controllers use DatabaseService to interact with the SQLite database.
+- File uploads are handled by UploadController and stored in the uploads/ folder.
+- The interactive API documentation is served by SwaggerController.
+- The diagram helps developers understand both the overall architecture and the main dependencies within the frontend.
+
+### Sequence Diagram (Key Scenario: Add Note with Image)
+
+![sequence diagram](./img/sequence_diagram.svg)
+
+```plantuml
+@startuml
+actor User
+participant "Frontend (React)" as FE
+participant "Backend (Express)" as BE
+participant "File Storage" as Storage
+database "SQLite DB" as DB
+
+User -> FE : Open Add Note form
+User -> FE : Fill title, content, select category, choose image
+FE -> BE : POST /api/upload (image)
+BE -> Storage : Save image file
+BE -> FE : Return imageUrl
+FE -> BE : POST /api/posts (note data)
+BE -> DB : Insert note
+BE -> FE : Return created note
+FE -> BE : POST /api/images (image record)
+BE -> DB : Insert image record
+BE -> FE : Return image record
+FE -> User : Show success message
+@enduml
+```
+
+The sequence diagram below illustrates the step-by-step interaction between the main actors and components of the NoteKeeper application during the process of adding a new note with an image.
+
+- User initiates the process by opening the Add Note form in the frontend.
+- Frontend (React) collects the note data and the image file from the user.
+- The image file is uploaded to the backend via a separate API call (/api/upload), where it is saved to the file storage.
+- The backend returns the URL of the uploaded image to the frontend.
+- The frontend then sends the note data to the backend (/api/posts), which stores the note in the database.
+- After the note is created, the frontend creates an image record (/api/images) linking the uploaded image to the note.
+- The backend stores this image record in the database.
+- At each step, the backend returns confirmation or data to the frontend, and the frontend provides feedback to the user (e.g., a success message).
+
+This diagram helps developers and analysts understand the dynamic flow of data and control between the user, frontend, backend, file storage, and database during a typical user action.
+
+### Class Diagram
+
+![uml class diagram](./img/uml_class_diagram.svg)
+
+```plantuml
+@startuml
+class Note {
+  +id: string
+  +title: string
+  +content: string
+  +categoryId: string
+  +constructor(id, title, content, categoryId)
+}
+
+class Category {
+  +id: string
+  +name: string
+  +color: string
+  +icon: string
+  +description: string
+  +constructor(id, name, color, icon, description)
+}
+
+class Image {
+  +id: string
+  +postId: string
+  +imageUrl: string
+  +constructor(id, postId, imageUrl)
+}
+
+class PostService {
+  +getPosts(): Promise<Note[]>
+  +addPost(note: Note): Promise<Note>
+  +editPost(note: Note): Promise<Note>
+  +deletePost(id: string): Promise<void>
+  +getImagesByPost(postId: string): Promise<Image[]>
+  +addImage(image: Image): Promise<Image>
+  +uploadImage(file: File): Promise<{imageUrl: string}>
+}
+
+class CategoryService {
+  +getCategories(): Promise<Category[]>
+  +addCategory(category: Category): Promise<Category>
+  +editCategory(category: Category): Promise<Category>
+  +deleteCategory(id: string): Promise<void>
+}
+
+class App {
+  +fetchAll()
+  +handleAddPost()
+  +handleEditPost()
+  +handleDeletePost()
+  +handleEditStart()
+  +handleCategoryChange()
+  +handleCancelEdit()
+}
+
+class PostForm {
+  +handleSubmit()
+}
+
+class PostList {}
+class PostItem {}
+class CategoryForm {}
+class CategoryManager {}
+class DatabasePage {}
+
+Note "1" -- "*" Category : belongs to >
+Image "*" -- "1" Note : attached to >
+App --> PostForm
+App --> PostList
+App --> CategoryForm
+App --> CategoryManager
+App --> DatabasePage
+PostForm ..> Note
+PostList ..> Note
+PostItem ..> Note
+CategoryForm ..> Category
+CategoryManager ..> Category
+PostForm ..> PostService
+PostList ..> PostService
+CategoryForm ..> CategoryService
+CategoryManager ..> CategoryService
+@enduml
+```
+
+#### Explanation of Class Diagram Relationships
+
+- `App` composes all main UI components and coordinates their state and data flow.
+- `PostForm`, `PostList`, `PostItem`, `CategoryForm`, and `CategoryManager` receive data and callback functions as props from `App`.
+- `PostForm` and `PostList` use `PostService` to interact with the backend API for notes and images.
+- `CategoryForm` and `CategoryManager` use `CategoryService` to interact with the backend API for categories.
+- `Note` and `Category` are data models used throughout the frontend and are passed between components and services.
+- Each `Note` belongs to a single `Category` (via `categoryId`), and each `Category` can have multiple `Note` objects.
+- Each `Image` is attached to a single `Note` (via `postId`), and each `Note` can have multiple `Image` objects.
+- On the backend, controllers (e.g., `PostController`, `CategoryController`) use `DatabaseService` to perform database operations.
+
+## 6. PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
 
 ```
 note-keeper/
@@ -1084,7 +1300,7 @@ PostService sends a POST request to the API (/api/posts) with the note data.
 The server executes the INSERT INTO posts (title, content, categoryId) VALUES (?, ?, ?); SQL query, adding a new note to the database.
 After successfully adding a note, the component updates the list of notes.
 
-## 6. DATA MODEL AND DATABASE STRUCTURE
+## 7. DATA MODEL AND DATABASE STRUCTURE
 
 ### Note
 
@@ -1217,7 +1433,7 @@ SELECT * FROM images;
 - Use `.headers on` and `.mode column` for better output formatting.
 - Use `.schema` to see table definitions.
 
-## 7. API Documentation
+## 8. API Documentation
 
 ### Interactive API Documentation (Swagger UI)
 
