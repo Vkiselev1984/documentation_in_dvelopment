@@ -1,0 +1,54 @@
+@startuml
+actor User
+
+package "Frontend (React)" {
+  [App]
+  [PostForm]
+  [PostList]
+  [CategoryForm]
+  [CategoryManager]
+  [DatabasePage]
+  [PostService]
+  [CategoryService]
+  [Note]
+  [Category]
+}
+
+package "Backend (Express)" {
+  [ExpressApp]
+  [CategoryController]
+  [PostController]
+  [ImageController]
+  [UploadController]
+  [SwaggerController]
+  [DatabaseService]
+}
+
+database "SQLite DB" as DB
+folder "File Storage" as Storage
+
+User --> [App]
+[App] --> [PostForm]
+[App] --> [PostList]
+[App] --> [CategoryForm]
+[App] --> [CategoryManager]
+[App] --> [DatabasePage]
+[PostForm] ..> [PostService]
+[PostList] ..> [PostService]
+[CategoryForm] ..> [CategoryService]
+[CategoryManager] ..> [CategoryService]
+[PostService] ..> [ExpressApp]
+[CategoryService] ..> [ExpressApp]
+
+[App] --> [ExpressApp] : HTTP (REST API)
+[ExpressApp] --> [CategoryController]
+[ExpressApp] --> [PostController]
+[ExpressApp] --> [ImageController]
+[ExpressApp] --> [UploadController]
+[ExpressApp] --> [SwaggerController]
+[CategoryController] --> [DatabaseService]
+[PostController] --> [DatabaseService]
+[ImageController] --> [DatabaseService]
+[DatabaseService] --> DB
+[UploadController] --> Storage
+@enduml

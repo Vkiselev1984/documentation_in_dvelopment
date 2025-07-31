@@ -1,0 +1,79 @@
+@startuml
+class Note {
+  +id: string
+  +title: string
+  +content: string
+  +categoryId: string
+  +constructor(id, title, content, categoryId)
+}
+
+class Category {
+  +id: string
+  +name: string
+  +color: string
+  +icon: string
+  +description: string
+  +constructor(id, name, color, icon, description)
+}
+
+class Image {
+  +id: string
+  +postId: string
+  +imageUrl: string
+  +constructor(id, postId, imageUrl)
+}
+
+class PostService {
+  +getPosts(): Promise<Note[]>
+  +addPost(note: Note): Promise<Note>
+  +editPost(note: Note): Promise<Note>
+  +deletePost(id: string): Promise<void>
+  +getImagesByPost(postId: string): Promise<Image[]>
+  +addImage(image: Image): Promise<Image>
+  +uploadImage(file: File): Promise<{imageUrl: string}>
+}
+
+class CategoryService {
+  +getCategories(): Promise<Category[]>
+  +addCategory(category: Category): Promise<Category>
+  +editCategory(category: Category): Promise<Category>
+  +deleteCategory(id: string): Promise<void>
+}
+
+class App {
+  +fetchAll()
+  +handleAddPost()
+  +handleEditPost()
+  +handleDeletePost()
+  +handleEditStart()
+  +handleCategoryChange()
+  +handleCancelEdit()
+}
+
+class PostForm {
+  +handleSubmit()
+}
+
+class PostList {}
+class PostItem {}
+class CategoryForm {}
+class CategoryManager {}
+class DatabasePage {}
+
+Note "1" -- "*" Category : belongs to >
+Image "*" -- "1" Note : attached to >
+App --> PostForm
+App --> PostList
+App --> CategoryForm
+App --> CategoryManager
+App --> DatabasePage
+PostForm ..> Note
+PostList ..> Note
+PostItem ..> Note
+CategoryForm ..> Category
+CategoryManager ..> Category
+PostForm ..> PostService
+PostList ..> PostService
+CategoryForm ..> CategoryService
+CategoryManager ..> CategoryService
+@enduml

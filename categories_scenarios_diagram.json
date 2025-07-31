@@ -1,0 +1,44 @@
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Add Category",
+      "steps": [
+        "User -> Frontend (React): Open Add Category form",
+        "User -> Frontend (React): Fill name, color, icon, description",
+        "Frontend (React) -> Backend (Express API): POST /api/categories (category data)",
+        "Backend (Express API) -> Database (SQLite): Insert category",
+        "Backend (Express API) -> Frontend (React): Return created category",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Edit Category",
+      "steps": [
+        "User -> Frontend (React): Click Edit on category",
+        "Frontend (React) -> Backend (Express API): PUT /api/categories/{id} (updated category data)",
+        "Backend (Express API) -> Database (SQLite): Update category",
+        "Backend (Express API) -> Frontend (React): Return updated category",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Delete Category",
+      "steps": [
+        "User -> Frontend (React): Click Delete on category",
+        "Frontend (React) -> Backend (Express API): DELETE /api/categories/{id}",
+        "Backend (Express API) -> Database (SQLite): Delete category (cascade delete posts and images)",
+        "Backend (Express API) -> Frontend (React): 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+@startuml
+actor User
+participant "Frontend (React)" as FE
+participant "Backend (Express)" as BE
+participant "File Storage" as Storage
+database "SQLite DB" as DB
+
+User -> FE : Open Add Note form
+User -> FE : Fill title, content, select category, choose image
+FE -> BE : POST /api/upload (image)
+BE -> Storage : Save image file
+BE -> FE : Return imageUrl
+FE -> BE : POST /api/posts (note data)
+BE -> DB : Insert note
+BE -> FE : Return created note
+FE -> BE : POST /api/images (image record)
+BE -> DB : Insert image record
+BE -> FE : Return image record
+FE -> User : Show success message
+@enduml

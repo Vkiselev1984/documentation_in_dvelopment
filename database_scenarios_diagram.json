@@ -1,0 +1,28 @@
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Database Table Management (View/Edit/Delete)",
+      "steps": [
+        "User -> Frontend (React): Open Database page",
+        "Frontend (React) -> Backend (Express API): GET /api/db/{table} (e.g., posts, categories, images)",
+        "Backend (Express API) -> Database (SQLite): Query all records from table",
+        "Backend (Express API) -> Frontend (React): Return records",
+        "Frontend (React) -> User: Display table data",
+        "User -> Frontend (React): Click Edit/Delete on a record",
+        "Frontend (React) -> Backend (Express API): PUT or DELETE /api/db/{table}/{id} (updated data or delete request)",
+        "Backend (Express API) -> Database (SQLite): Update or delete record",
+        "Backend (Express API) -> Frontend (React): Return updated record or 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    }
+  ]
+}

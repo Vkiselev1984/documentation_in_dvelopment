@@ -1,0 +1,60 @@
+{
+  "actors": [
+    "User"
+  ],
+  "components": [
+    "Frontend (React)",
+    "Backend (Express API)",
+    "Database (SQLite)",
+    "File Storage (uploads/)"
+  ],
+  "flows": [
+    {
+      "scenario": "Add Note with Image",
+      "steps": [
+        "User -> Frontend (React): Open Add Note form",
+        "User -> Frontend (React): Fill title, content, select category, choose image",
+        "Frontend (React) -> Backend (Express API): POST /api/upload (multipart/form-data, image)",
+        "Backend (Express API) -> File Storage (uploads/): Save image file",
+        "Backend (Express API) -> Frontend (React): Return imageUrl",
+        "Frontend (React) -> Backend (Express API): POST /api/posts (note data)",
+        "Backend (Express API) -> Database (SQLite): Insert note",
+        "Backend (Express API) -> Frontend (React): Return created note",
+        "Frontend (React) -> Backend (Express API): POST /api/images (image record: postId, imageUrl)",
+        "Backend (Express API) -> Database (SQLite): Insert image record",
+        "Backend (Express API) -> Frontend (React): Return image record",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Edit Note",
+      "steps": [
+        "User -> Frontend (React): Click Edit on note",
+        "Frontend (React) -> Backend (Express API): PUT /api/posts/{id} (updated note data)",
+        "Backend (Express API) -> Database (SQLite): Update note",
+        "Backend (Express API) -> Frontend (React): Return updated note",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Delete Note",
+      "steps": [
+        "User -> Frontend (React): Click Delete on note",
+        "Frontend (React) -> Backend (Express API): DELETE /api/posts/{id}",
+        "Backend (Express API) -> Database (SQLite): Delete note (cascade delete images)",
+        "Backend (Express API) -> Frontend (React): 204 No Content",
+        "Frontend (React) -> User: Show success message"
+      ]
+    },
+    {
+      "scenario": "Search/Filter Notes",
+      "steps": [
+        "User -> Frontend (React): Enter search query or select category",
+        "Frontend (React) -> Backend (Express API): GET /api/posts?search=... (or filter locally)",
+        "Backend (Express API) -> Database (SQLite): Query notes",
+        "Backend (Express API) -> Frontend (React): Return filtered notes",
+        "Frontend (React) -> User: Display filtered notes"
+      ]
+    }
+  ]
+}

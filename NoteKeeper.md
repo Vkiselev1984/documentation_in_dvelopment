@@ -6,9 +6,8 @@
 - [Main Features](#2-main-features)
 - [User Scenarios](#3-user-scenarios)
 - [Scenarios diagram](#4-scenarios-diagram)
-- [Documenting object models](#5-documenting-object-models)
-- [Project Structure Architecture and Operating principle](#6-project-structure-architecture-and-operating-principle)
-- [Data Model and Database Structure](#7-data-model-and-database-structure)
+- [Project Structure Architecture and Operating principle](#5-project-structure-architecture-and-operating-principle)
+- [Data Model and Database Structure](#6-data-model-and-database-structure)
 - [API Documentation](#8-api-documentation)
 
 ## 1. OVERVIEW
@@ -129,225 +128,27 @@ The application allows you to:
 - The user presses the edit button opposite the table name, the row becomes editable
 - The user makes changes to the corresponding fields and presses the Save or Cancel button to save or cancel the changes
 
-## 4. SCEBARIOS DIAGRAMS
+## 4. UML DIAGRAMS
 
-### NOTES
+### Scenarios diagram
 
-```Json
-{
-  "actors": [
-    "User"
-  ],
-  "components": [
-    "Frontend (React)",
-    "Backend (Express API)",
-    "Database (SQLite)",
-    "File Storage (uploads/)"
-  ],
-  "flows": [
-    {
-      "scenario": "Add Note with Image",
-      "steps": [
-        "User -> Frontend (React): Open Add Note form",
-        "User -> Frontend (React): Fill title, content, select category, choose image",
-        "Frontend (React) -> Backend (Express API): POST /api/upload (multipart/form-data, image)",
-        "Backend (Express API) -> File Storage (uploads/): Save image file",
-        "Backend (Express API) -> Frontend (React): Return imageUrl",
-        "Frontend (React) -> Backend (Express API): POST /api/posts (note data)",
-        "Backend (Express API) -> Database (SQLite): Insert note",
-        "Backend (Express API) -> Frontend (React): Return created note",
-        "Frontend (React) -> Backend (Express API): POST /api/images (image record: postId, imageUrl)",
-        "Backend (Express API) -> Database (SQLite): Insert image record",
-        "Backend (Express API) -> Frontend (React): Return image record",
-        "Frontend (React) -> User: Show success message"
-      ]
-    },
-    {
-      "scenario": "Edit Note",
-      "steps": [
-        "User -> Frontend (React): Click Edit on note",
-        "Frontend (React) -> Backend (Express API): PUT /api/posts/{id} (updated note data)",
-        "Backend (Express API) -> Database (SQLite): Update note",
-        "Backend (Express API) -> Frontend (React): Return updated note",
-        "Frontend (React) -> User: Show success message"
-      ]
-    },
-    {
-      "scenario": "Delete Note",
-      "steps": [
-        "User -> Frontend (React): Click Delete on note",
-        "Frontend (React) -> Backend (Express API): DELETE /api/posts/{id}",
-        "Backend (Express API) -> Database (SQLite): Delete note (cascade delete images)",
-        "Backend (Express API) -> Frontend (React): 204 No Content",
-        "Frontend (React) -> User: Show success message"
-      ]
-    },
-    {
-      "scenario": "Search/Filter Notes",
-      "steps": [
-        "User -> Frontend (React): Enter search query or select category",
-        "Frontend (React) -> Backend (Express API): GET /api/posts?search=... (or filter locally)",
-        "Backend (Express API) -> Database (SQLite): Query notes",
-        "Backend (Express API) -> Frontend (React): Return filtered notes",
-        "Frontend (React) -> User: Display filtered notes"
-      ]
-    }
-  ]
-}
-```
+**Notes**
 
 ![notes](./img/uml_notes.png)
 
-### CATEGORIES
-
-```Json
-{
-  "actors": [
-    "User"
-  ],
-  "components": [
-    "Frontend (React)",
-    "Backend (Express API)",
-    "Database (SQLite)",
-    "File Storage (uploads/)"
-  ],
-  "flows": [
-    {
-      "scenario": "Add Category",
-      "steps": [
-        "User -> Frontend (React): Open Add Category form",
-        "User -> Frontend (React): Fill name, color, icon, description",
-        "Frontend (React) -> Backend (Express API): POST /api/categories (category data)",
-        "Backend (Express API) -> Database (SQLite): Insert category",
-        "Backend (Express API) -> Frontend (React): Return created category",
-        "Frontend (React) -> User: Show success message"
-      ]
-    },
-    {
-      "scenario": "Edit Category",
-      "steps": [
-        "User -> Frontend (React): Click Edit on category",
-        "Frontend (React) -> Backend (Express API): PUT /api/categories/{id} (updated category data)",
-        "Backend (Express API) -> Database (SQLite): Update category",
-        "Backend (Express API) -> Frontend (React): Return updated category",
-        "Frontend (React) -> User: Show success message"
-      ]
-    },
-    {
-      "scenario": "Delete Category",
-      "steps": [
-        "User -> Frontend (React): Click Delete on category",
-        "Frontend (React) -> Backend (Express API): DELETE /api/categories/{id}",
-        "Backend (Express API) -> Database (SQLite): Delete category (cascade delete posts and images)",
-        "Backend (Express API) -> Frontend (React): 204 No Content",
-        "Frontend (React) -> User: Show success message"
-      ]
-    }
-  ]
-}
-```
+**Categories**
 
 ![categories](./img/uml_categories.png)
 
-### DATABASE
-
-```Json
-{
-  "actors": [
-    "User"
-  ],
-  "components": [
-    "Frontend (React)",
-    "Backend (Express API)",
-    "Database (SQLite)",
-    "File Storage (uploads/)"
-  ],
-  "flows": [
-    {
-      "scenario": "Database Table Management (View/Edit/Delete)",
-      "steps": [
-        "User -> Frontend (React): Open Database page",
-        "Frontend (React) -> Backend (Express API): GET /api/db/{table} (e.g., posts, categories, images)",
-        "Backend (Express API) -> Database (SQLite): Query all records from table",
-        "Backend (Express API) -> Frontend (React): Return records",
-        "Frontend (React) -> User: Display table data",
-        "User -> Frontend (React): Click Edit/Delete on a record",
-        "Frontend (React) -> Backend (Express API): PUT or DELETE /api/db/{table}/{id} (updated data or delete request)",
-        "Backend (Express API) -> Database (SQLite): Update or delete record",
-        "Backend (Express API) -> Frontend (React): Return updated record or 204 No Content",
-        "Frontend (React) -> User: Show success message"
-      ]
-    }
-  ]
-}
-```
+**Database**
 
 ![database](./img/uml_database.png)
 
 Visualization of technical processes is made using [todiagram](https://todiagram.com)
 
-## 5. DOCUMENTING OBJECT MODELS
-
 ### Component Diagram (Logical Architecture)
 
 ![uml component diagram](./img/сomponent_diagram.svg)
-
-```plantuml
-@startuml
-actor User
-
-package "Frontend (React)" {
-  [App]
-  [PostForm]
-  [PostList]
-  [CategoryForm]
-  [CategoryManager]
-  [DatabasePage]
-  [PostService]
-  [CategoryService]
-  [Note]
-  [Category]
-}
-
-package "Backend (Express)" {
-  [ExpressApp]
-  [CategoryController]
-  [PostController]
-  [ImageController]
-  [UploadController]
-  [SwaggerController]
-  [DatabaseService]
-}
-
-database "SQLite DB" as DB
-folder "File Storage" as Storage
-
-User --> [App]
-[App] --> [PostForm]
-[App] --> [PostList]
-[App] --> [CategoryForm]
-[App] --> [CategoryManager]
-[App] --> [DatabasePage]
-[PostForm] ..> [PostService]
-[PostList] ..> [PostService]
-[CategoryForm] ..> [CategoryService]
-[CategoryManager] ..> [CategoryService]
-[PostService] ..> [ExpressApp]
-[CategoryService] ..> [ExpressApp]
-
-[App] --> [ExpressApp] : HTTP (REST API)
-[ExpressApp] --> [CategoryController]
-[ExpressApp] --> [PostController]
-[ExpressApp] --> [ImageController]
-[ExpressApp] --> [UploadController]
-[ExpressApp] --> [SwaggerController]
-[CategoryController] --> [DatabaseService]
-[PostController] --> [DatabaseService]
-[ImageController] --> [DatabaseService]
-[DatabaseService] --> DB
-[UploadController] --> Storage
-@enduml
-```
 
 This component diagram shows the high-level structure and internal organization of the NoteKeeper application.
 
@@ -368,29 +169,6 @@ The diagram illustrates how the user interacts with the UI, how components commu
 
 ![sequence diagram](./img/sequence_diagram.svg)
 
-```plantuml
-@startuml
-actor User
-participant "Frontend (React)" as FE
-participant "Backend (Express)" as BE
-participant "File Storage" as Storage
-database "SQLite DB" as DB
-
-User -> FE : Open Add Note form
-User -> FE : Fill title, content, select category, choose image
-FE -> BE : POST /api/upload (image)
-BE -> Storage : Save image file
-BE -> FE : Return imageUrl
-FE -> BE : POST /api/posts (note data)
-BE -> DB : Insert note
-BE -> FE : Return created note
-FE -> BE : POST /api/images (image record)
-BE -> DB : Insert image record
-BE -> FE : Return image record
-FE -> User : Show success message
-@enduml
-```
-
 The sequence diagram below illustrates the step-by-step interaction between the main actors and components of the NoteKeeper application during the process of adding a new note with an image.
 
 - User initiates the process by opening the Add Note form in the frontend.
@@ -408,90 +186,6 @@ This diagram helps developers and analysts understand the dynamic flow of data a
 
 ![uml class diagram](./img/uml_class_diagram.svg)
 
-```plantuml
-@startuml
-class Note {
-  +id: string
-  +title: string
-  +content: string
-  +categoryId: string
-  +constructor(id, title, content, categoryId)
-}
-
-class Category {
-  +id: string
-  +name: string
-  +color: string
-  +icon: string
-  +description: string
-  +constructor(id, name, color, icon, description)
-}
-
-class Image {
-  +id: string
-  +postId: string
-  +imageUrl: string
-  +constructor(id, postId, imageUrl)
-}
-
-class PostService {
-  +getPosts(): Promise<Note[]>
-  +addPost(note: Note): Promise<Note>
-  +editPost(note: Note): Promise<Note>
-  +deletePost(id: string): Promise<void>
-  +getImagesByPost(postId: string): Promise<Image[]>
-  +addImage(image: Image): Promise<Image>
-  +uploadImage(file: File): Promise<{imageUrl: string}>
-}
-
-class CategoryService {
-  +getCategories(): Promise<Category[]>
-  +addCategory(category: Category): Promise<Category>
-  +editCategory(category: Category): Promise<Category>
-  +deleteCategory(id: string): Promise<void>
-}
-
-class App {
-  +fetchAll()
-  +handleAddPost()
-  +handleEditPost()
-  +handleDeletePost()
-  +handleEditStart()
-  +handleCategoryChange()
-  +handleCancelEdit()
-}
-
-class PostForm {
-  +handleSubmit()
-}
-
-class PostList {}
-class PostItem {}
-class CategoryForm {}
-class CategoryManager {}
-class DatabasePage {}
-
-Note "1" -- "*" Category : belongs to >
-Image "*" -- "1" Note : attached to >
-App --> PostForm
-App --> PostList
-App --> CategoryForm
-App --> CategoryManager
-App --> DatabasePage
-PostForm ..> Note
-PostList ..> Note
-PostItem ..> Note
-CategoryForm ..> Category
-CategoryManager ..> Category
-PostForm ..> PostService
-PostList ..> PostService
-CategoryForm ..> CategoryService
-CategoryManager ..> CategoryService
-@enduml
-```
-
-#### Explanation of Class Diagram Relationships
-
 - `App` composes all main UI components and coordinates their state and data flow.
 - `PostForm`, `PostList`, `PostItem`, `CategoryForm`, and `CategoryManager` receive data and callback functions as props from `App`.
 - `PostForm` and `PostList` use `PostService` to interact with the backend API for notes and images.
@@ -501,64 +195,89 @@ CategoryManager ..> CategoryService
 - Each `Image` is attached to a single `Note` (via `postId`), and each `Note` can have multiple `Image` objects.
 - On the backend, controllers (e.g., `PostController`, `CategoryController`) use `DatabaseService` to perform database operations.
 
-## 6. PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
+## 5. PROJECT STRUCTURE ARCHITECTURE AND OPERATING PRINCIPLE
 
 ```
 note-keeper/
 ├── backend/
 │   ├── server.js
 │   ├── package.json
+│   ├── package-lock.json
 │   ├── uploads/
+│   ├── db/
+│   │   └── DatabaseService.js
+│   ├── controllers/
+│   │   ├── CategoryController.js
+│   │   ├── PostController.js
+│   │   ├── ImageController.js
+│   │   ├── UploadController.js
+│   │   └── SwaggerController.js
 │   └── node_modules/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── App.js
+│   │   │   ├── PostForm.js
+│   │   │   ├── PostList.js
+│   │   │   ├── PostItem.js
+│   │   │   ├── CategoryForm.js
+│   │   │   ├── CategoryManager.js
+│   │   │   └── DatabasePage.js
 │   │   ├── services/
+│   │   │   ├── PostService.js
+│   │   │   └── CategoryService.js
 │   │   ├── models/
+│   │   │   ├── Note.js
+│   │   │   └── Category.js
 │   │   ├── App.css
 │   │   ├── index.js
 │   │   ├── index.css
-│   │   └── ...
+│   │   └── reportWebVitals.js
 │   ├── public/
 │   ├── package.json
+│   ├── package-lock.json
 │   └── node_modules/
 ├── database/
     └── note-keeper.db
 ```
 
-- **backend/** — Contains all backend (server-side) code.
+**backend**
 
-  - **server.js** — The main Node.js/Express server. Implements all REST API endpoints, database initialization, and file upload logic.
-  - **package.json** — Lists backend dependencies (Express, sqlite3, multer, etc.) and scripts to run the server.
-  - **uploads/** — Stores all images uploaded by users. Files are saved here by the backend and served as static files.
-  - **node_modules/** — Installed backend dependencies (auto-generated).
+- server.js — Main entry point. Initializes Express, connects middleware, and registers all controllers.
+- package.json, package-lock.json — Backend dependencies and scripts.
+- uploads/ — Stores all images uploaded by users (served as static files).
+- db/DatabaseService.js — Handles SQLite database connection and schema initialization.
+- controllers/ — Each file is a class responsible for a specific API resource or feature:
+  - CategoryController.js — CRUD for categories.
+  - PostController.js — CRUD for notes.
+  - ImageController.js — CRUD for images.
+  - UploadController.js — Handles file uploads (Multer).
+  - SwaggerController.js — Serves Swagger UI for API documentation.
 
-- **frontend/** — Contains all frontend (client-side) code.
+**frontend**
 
-  - **src/** — Main source code for the React app.
-    - **components/** — All React UI components. Each file implements a part of the user interface and its logic:
-      - **App.js** — The main application component. Handles routing, global state, and high-level logic.
-      - **PostForm.js** — Form for adding/editing notes. Handles form state and submission.
-      - **PostList.js** — Displays a list of notes. Handles rendering, filtering, and user actions (edit/delete).
-      - **PostItem.js** — Renders a single note, including its images and actions.
-      - **CategoryForm.js** — Form for adding a new category.
-      - **CategoryManager.js** — UI for editing and deleting categories.
-      - **DatabasePage.js** — UI for viewing/editing the database tables directly from the browser.
-    - **services/** — API service classes for communicating with the backend:
-      - **PostService.js** — Handles all API requests related to notes and images (CRUD, image upload, etc.).
-      - **CategoryService.js** — Handles all API requests related to categories (CRUD).
-    - **models/** — Data model classes:
-      - **Category.js** — Defines the Category class used throughout the frontend.
-    - **App.css, index.js, index.css** — Styling and entry points for the React app.
-  - **public/** — Static files served by the frontend (HTML, icons, manifest, etc.).
-  - **package.json** — Lists frontend dependencies (React, Bootstrap, etc.) and scripts to run the app.
-  - **node_modules/** — Installed frontend dependencies (auto-generated).
+- src/ — Main source code for the React app.
+- components/ — All React UI components:
+  - App.js — Main application component, routing, global state.
+  - PostForm.js — Form for adding/editing notes.
+  - PostList.js — List of notes, filtering, actions.
+  - PostItem.js — Single note display.
+  - CategoryForm.js — Form for adding a new category.
+  - CategoryManager.js — Edit/delete categories.
+  - DatabasePage.js — View/edit database tables from the browser.
+- services/ — API service classes:
+  - PostService.js — All API requests for notes and images.
+  - CategoryService.js — All API requests for categories.
+- models/ — Data model classes:
+  - Note.js — Note class.
+  - Category.js — Category class.
+- App.css, index.js, index.css, reportWebVitals.js — Styling, entry points, and performance reporting.
+- public/ — Static files (HTML, icons, manifest, etc.).
+  package.json, package-lock.json — Frontend dependencies and scripts.
 
-- **database/**
+**database**
 
-  - **note-keeper.db** — The SQLite database file. Stores all notes, categories, and images.
-
----
+- note-keeper.db — SQLite database file. Stores all notes, categories, and images.
 
 ### Principles of Work
 
@@ -1300,7 +1019,7 @@ PostService sends a POST request to the API (/api/posts) with the note data.
 The server executes the INSERT INTO posts (title, content, categoryId) VALUES (?, ?, ?); SQL query, adding a new note to the database.
 After successfully adding a note, the component updates the list of notes.
 
-## 7. DATA MODEL AND DATABASE STRUCTURE
+## 6. DATA MODEL AND DATABASE STRUCTURE
 
 ### Note
 
