@@ -29,6 +29,12 @@ class DatabaseService {
         imageUrl TEXT NOT NULL,
         FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
       )`);
+      this.db.run(`CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  role TEXT NOT NULL
+)`);
     });
   }
 

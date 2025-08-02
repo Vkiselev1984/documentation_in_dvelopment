@@ -1153,8 +1153,7 @@ As an example, we will describe the structure of a class diagram for an online s
   phone, etc.).
 - Class “PaymentMethod” - represents the payment method (for example, cash,
   bank card, etc.).
-- Class “ShippingMethod” - describes the delivery method (for example, courier
-  delivery, pick-up, etc.).
+- Class “ShippingMethod” - describes the delivery method (for example, courier delivery, pick-up, etc.).
 
 Associations between classes:
 

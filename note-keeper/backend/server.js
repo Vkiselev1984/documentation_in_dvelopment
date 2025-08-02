@@ -12,13 +12,14 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Controllers
 const CategoryController = require('./controllers/CategoryController');
 const PostController = require('./controllers/PostController');
 const ImageController = require('./controllers/ImageController');
 const UploadController = require('./controllers/UploadController');
 const SwaggerController = require('./controllers/SwaggerController');
+const UserController = require('./controllers/UserController');
 
+new UserController(app, db);
 new CategoryController(app, db);
 new PostController(app, db);
 new ImageController(app, db);

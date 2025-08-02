@@ -1,12 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect, useState } from 'react';
-import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import Note from '../models/Note';
 import categoryService from '../services/CategoryService';
 import postService from '../services/PostService';
 import CategoryForm from './CategoryForm';
 import CategoryManager from './CategoryManager';
 import DatabasePage from './DatabasePage';
+import LoginForm from './LoginForm';
 import PostForm from './PostForm';
 import PostList from './PostList';
 
@@ -18,6 +20,15 @@ const App = () => {
     const navigate = useNavigate();
     const [categoryFilter, setCategoryFilter] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const { user, logout } = useContext(AuthContext);
+
+
+    {
+        user && user.role === 'admin' && (
+            <NavLink to="/database">Database</NavLink>
+        )
+    }
+    <button onClick={logout}>Logout</button>
 
     useEffect(() => {
         fetchAll();
@@ -92,6 +103,10 @@ const App = () => {
                     <NavLink to="/posts" className={({ isActive }) => isActive ? "btn btn-outline-primary me-2 active" : "btn btn-outline-primary me-2"}>Posts</NavLink>
                     <NavLink to="/categories" className={({ isActive }) => isActive ? "btn btn-outline-primary me-2 active" : "btn btn-outline-primary me-2"}>Categories</NavLink>
                     <NavLink to="/database" className={({ isActive }) => isActive ? "btn btn-outline-secondary active" : "btn btn-outline-secondary"}>Database</NavLink>
+                    {!user && (
+                        <NavLink to="/login" className="btn btn-outline-primary me-2">Login</NavLink>
+                    )}
+                    {user && <button onClick={logout} className="btn btn-outline-danger ms-2">Logout</button>}
                 </div>
                 <input
                     type="text"
@@ -103,6 +118,9 @@ const App = () => {
                 />
             </nav>
             <Routes>
+                <Route path="/login" element={
+                    !user ? <LoginForm /> : <Navigate to="/" />
+                } />
                 <Route path="/add-post" element={
                     <PostForm
                         onAddPost={handleAddPost}
